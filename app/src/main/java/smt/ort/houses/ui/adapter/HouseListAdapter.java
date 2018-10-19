@@ -1,4 +1,4 @@
-package smt.ort.houses.adapter;
+package smt.ort.houses.ui.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
