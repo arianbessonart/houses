@@ -2,19 +2,17 @@ package smt.ort.houses.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import smt.ort.houses.db.HouseDao;
 import smt.ort.houses.db.HouseRoomDatabase;
 import smt.ort.houses.model.House;
+import smt.ort.houses.network.ApiResponse;
 import smt.ort.houses.network.ClientService;
 import smt.ort.houses.network.HousesService;
+import smt.ort.houses.network.NetworkBoundResource;
 
 public class HouseRepository {
 
@@ -27,23 +25,45 @@ public class HouseRepository {
     public HouseRepository(Application app) {
         HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
         dao = db.houseDao();
-        houses = dao.getAllHouses();
         service = ClientService.getClient().create(HousesService.class);
     }
 
     public LiveData<List<House>> getHouses() {
-        final MutableLiveData<List<House>> data = new MutableLiveData<>();
-        service.getHouses().enqueue(new Callback<List<House>>() {
+        return new NetworkBoundResource<List<House>, List<House>>() {
+
             @Override
-            public void onResponse(Call<List<House>> call, Response<List<House>> response) {
-                data.setValue(response.body());
+            protected void saveCallResult(@NonNull List<House> item) {
+                dao.insertHouses(item);
             }
 
             @Override
-            public void onFailure(Call<List<House>> call, Throwable t) {
-                Log.w("WEBSERVICES", t);
+            protected boolean shouldFetch(@NonNull List<House> data) {
+                return true;
             }
-        });
-        return data;
+
+            @Override
+            protected LiveData<List<House>> loadFromDb() {
+                return dao.getAllHouses();
+            }
+
+            @Override
+            protected LiveData<ApiResponse<List<House>>> createCall() {
+                return service.getHouses();
+            }
+        }.getAsLiveData();
+
+//        final MutableLiveData<List<House>> data = new MutableLiveData<>();
+//        service.getHouses().enqueue(new Callback<List<House>>() {
+//            @Override
+//            public void onResponse(Call<List<House>> call, Response<List<House>> response) {
+//                data.setValue(response.body());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<House>> call, Throwable t) {
+//                Log.w("WEBSERVICES", t);
+//            }
+//        });
+//        return data;
     }
 }

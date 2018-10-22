@@ -14,7 +14,7 @@ public class ClientService {
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.mocky.io/v2/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
+                .client(client).addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .build();
 
         return retrofit;

@@ -21,7 +21,7 @@ public abstract class HouseRoomDatabase extends RoomDatabase {
     private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
-            new PopulateDbAsync(instance).execute();
+//            new PopulateDbAsync(instance).execute();
         }
     };
 
@@ -51,10 +51,10 @@ public abstract class HouseRoomDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params) {
             mDao.deleteAll();
-            House house = new House(1L, "Casa 1");
-            mDao.insert(house);
-            house = new House(2L, "Casa 2");
-            mDao.insert(house);
+//            House house = new House(1L, "Casa 1");
+//            mDao.insert(house);
+//            house = new House(2L, "Casa 2");
+//            mDao.insert(house);
             return null;
         }
     }
