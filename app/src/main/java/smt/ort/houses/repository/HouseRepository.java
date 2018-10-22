@@ -20,8 +20,6 @@ public class HouseRepository {
 
     private HousesService service;
 
-    private LiveData<List<House>> houses;
-
     public HouseRepository(Application app) {
         HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
         dao = db.houseDao();
