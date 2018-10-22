@@ -51,19 +51,5 @@ public class HouseRepository {
                 return service.getHouses();
             }
         }.getAsLiveData();
-
-//        final MutableLiveData<List<House>> data = new MutableLiveData<>();
-//        service.getHouses().enqueue(new Callback<List<House>>() {
-//            @Override
-//            public void onResponse(Call<List<House>> call, Response<List<House>> response) {
-//                data.setValue(response.body());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<House>> call, Throwable t) {
-//                Log.w("WEBSERVICES", t);
-//            }
-//        });
-//        return data;
     }
 }
