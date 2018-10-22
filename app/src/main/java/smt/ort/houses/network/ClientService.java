@@ -3,6 +3,7 @@ package smt.ort.houses.network;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import smt.ort.houses.network.utils.LiveDataCallAdapterFactory;
 
 public class ClientService {
 

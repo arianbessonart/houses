@@ -1,4 +1,4 @@
-package smt.ort.houses.network;
+package smt.ort.houses.network.utils;
 
 import android.arch.lifecycle.LiveData;
 
@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
+import smt.ort.houses.network.ApiResponse;
 
 public class LiveDataCallAdapterFactory extends CallAdapter.Factory {
 

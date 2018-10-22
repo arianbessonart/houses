@@ -12,7 +12,7 @@ import smt.ort.houses.model.House;
 import smt.ort.houses.network.ApiResponse;
 import smt.ort.houses.network.ClientService;
 import smt.ort.houses.network.HousesService;
-import smt.ort.houses.network.NetworkBoundResource;
+import smt.ort.houses.network.utils.NetworkBoundResource;
 
 public class HouseRepository {
 
