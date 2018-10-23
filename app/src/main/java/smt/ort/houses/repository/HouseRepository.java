@@ -12,6 +12,7 @@ import smt.ort.houses.model.House;
 import smt.ort.houses.network.ApiResponse;
 import smt.ort.houses.network.ClientService;
 import smt.ort.houses.network.HousesService;
+import smt.ort.houses.network.Resource;
 import smt.ort.houses.network.utils.NetworkBoundResource;
 
 public class HouseRepository {
@@ -26,7 +27,7 @@ public class HouseRepository {
         service = ClientService.getClient().create(HousesService.class);
     }
 
-    public LiveData<List<House>> getHouses() {
+    public LiveData<Resource<List<House>>> getHouses() {
         return new NetworkBoundResource<List<House>, List<House>>() {
 
             @Override

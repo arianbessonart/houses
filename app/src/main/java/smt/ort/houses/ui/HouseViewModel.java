@@ -7,13 +7,14 @@ import android.arch.lifecycle.LiveData;
 import java.util.List;
 
 import smt.ort.houses.model.House;
+import smt.ort.houses.network.Resource;
 import smt.ort.houses.repository.HouseRepository;
 
 public class HouseViewModel extends AndroidViewModel {
 
     private HouseRepository repository;
 
-    private LiveData<List<House>> houses;
+    private LiveData<Resource<List<House>>> houses;
 
     public HouseViewModel(Application app) {
         super(app);
@@ -21,7 +22,7 @@ public class HouseViewModel extends AndroidViewModel {
         houses = repository.getHouses();
     }
 
-    public LiveData<List<House>> getHouses() {
+    public LiveData<Resource<List<House>>> getHouses() {
         return houses;
     }
 }

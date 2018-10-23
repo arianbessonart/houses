@@ -12,6 +12,7 @@ import android.view.Menu;
 
 import java.util.List;
 
+import smt.ort.houses.network.Resource;
 import smt.ort.houses.ui.adapter.HouseListAdapter;
 import smt.ort.houses.model.House;
 import smt.ort.houses.ui.HouseViewModel;
@@ -34,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         houseViewModel = ViewModelProviders.of(this).get(HouseViewModel.class);
-        houseViewModel.getHouses().observe(this, new Observer<List<House>>() {
+        houseViewModel.getHouses().observe(this, new Observer<Resource<List<House>>>() {
             @Override
-            public void onChanged(@Nullable List<House> houses) {
-                adapter.setHouses(houses);
+            public void onChanged(@Nullable Resource<List<House>> houses) {
+                adapter.setHouses(houses.getData());
             }
         });
 

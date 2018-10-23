@@ -10,12 +10,14 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import smt.ort.houses.network.ApiResponse;
+import smt.ort.houses.network.Resource;
 
 public abstract class NetworkBoundResource<ResultType, RequestType> {
 
-    private MediatorLiveData<ResultType> result = new MediatorLiveData<>();
+    private MediatorLiveData<Resource<ResultType>> result = new MediatorLiveData<>();
 
     public NetworkBoundResource() {
+        result.setValue((Resource<ResultType>) Resource.loading(null));
         final LiveData<ResultType> dbSource = loadFromDb();
         result.addSource(dbSource, new Observer<ResultType>() {
             @Override
@@ -27,7 +29,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
                     result.addSource(dbSource, new Observer<ResultType>() {
                         @Override
                         public void onChanged(@Nullable ResultType newData) {
-                            setValue(newData);
+                            result.setValue(Resource.success(newData));
                         }
                     });
                 }
@@ -35,20 +37,13 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
         });
     }
 
-    private void setValue(ResultType newValue) {
-        if (result.getValue() != newValue) {
-            result.setValue(newValue);
-        }
-    }
-
-
     private void fetchFromNetwork(final LiveData<ResultType> dbSource) {
         final LiveData<ApiResponse<RequestType>> apiResponse = createCall();
 
         result.addSource(dbSource, new Observer<ResultType>() {
             @Override
             public void onChanged(@Nullable ResultType newData) {
-                setValue(newData);
+                result.setValue(Resource.loading(newData));
             }
         });
         result.addSource(apiResponse, new Observer<ApiResponse<RequestType>>() {
@@ -64,7 +59,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
                         @Override
                         public void onChanged(@Nullable ResultType newData) {
                             Log.e("ERROR NETWORK", "" + response.getError());
-                            result.setValue(newData);
+                            result.setValue(Resource.error(new Exception(response.getError()), newData));
                         }
                     });
                 }
@@ -88,7 +83,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
                 result.addSource(loadFromDb(), new Observer<ResultType>() {
                     @Override
                     public void onChanged(@Nullable ResultType newData) {
-                        result.setValue(newData);
+                        result.setValue(Resource.success(newData));
                     }
                 });
             }
@@ -106,7 +101,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     protected void onFetchFailed() {
     }
 
-    public final LiveData<ResultType> getAsLiveData() {
+    public final LiveData<Resource<ResultType>> getAsLiveData() {
         return result;
     }
 
