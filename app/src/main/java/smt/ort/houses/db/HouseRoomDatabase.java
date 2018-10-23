@@ -13,7 +13,7 @@ import smt.ort.houses.model.House;
 
 @Database(entities = {
         House.class
-}, version = 1)
+}, version = 2)
 public abstract class HouseRoomDatabase extends RoomDatabase {
 
     private static volatile HouseRoomDatabase instance;
@@ -31,6 +31,7 @@ public abstract class HouseRoomDatabase extends RoomDatabase {
                 if (instance == null) {
                     instance = Room.databaseBuilder(ctx.getApplicationContext(), HouseRoomDatabase.class, "houses_database")
                             .addCallback(sRoomDatabaseCallback)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
