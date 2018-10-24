@@ -1,7 +1,9 @@
 package smt.ort.houses.ui;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,13 +20,14 @@ import smt.ort.houses.R;
 import smt.ort.houses.model.House;
 import smt.ort.houses.network.Resource;
 import smt.ort.houses.ui.adapter.HouseListAdapter;
+import smt.ort.houses.ui.adapter.OnHouseListListener;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements OnHouseListListener {
 
     private RecyclerView recyclerView;
     private HouseViewModel houseViewModel;
-
+    private OnHouseSelectedListener listener;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -36,9 +39,16 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity) {
+            this.listener = (OnHouseSelectedListener) context;
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -49,7 +59,7 @@ public class HomeFragment extends Fragment {
         FragmentActivity activity = getActivity();
         recyclerView = view.findViewById(R.id.recyclerView);
 
-        final HouseListAdapter adapter = new HouseListAdapter(activity);
+        final HouseListAdapter adapter = new HouseListAdapter(activity, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
@@ -62,6 +72,15 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onHouseSelected(House house) {
+        this.listener.onHouseSelected(house);
+    }
+
+    public interface OnHouseSelectedListener {
+        void onHouseSelected(House house);
     }
 
 }

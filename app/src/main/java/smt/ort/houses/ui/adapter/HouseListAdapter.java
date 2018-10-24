@@ -20,15 +20,18 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
 
     private final LayoutInflater mInflater;
     private List<House> houses;
+    OnHouseListListener listener;
 
-    public HouseListAdapter(Context context) {
+    public HouseListAdapter(Context context, OnHouseListListener listener) {
         mInflater = LayoutInflater.from(context);
+        this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public HouseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HouseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.house_list_item, parent, false);
-        return new HouseViewHolder(itemView, this);
+        return new HouseViewHolder(itemView);
     }
 
     @Override
@@ -64,7 +67,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
         private TextView priceTextView;
         private ImageView imageView;
 
-        public HouseViewHolder(@NonNull View itemView, HouseListAdapter adapter) {
+        HouseViewHolder(@NonNull View itemView) {
             super(itemView);
             this.titleView = itemView.findViewById(R.id.houseTitleTextView);
             this.imageView = itemView.findViewById(R.id.imageCardView);
@@ -72,7 +75,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    listener.onHouseSelected(houses.get(getAdapterPosition()));
                 }
             });
         }

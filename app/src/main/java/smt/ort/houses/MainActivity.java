@@ -13,9 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import smt.ort.houses.model.House;
 import smt.ort.houses.ui.HomeFragment;
+import smt.ort.houses.ui.HouseDetailFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnHouseSelectedListener {
 
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -90,4 +92,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onHouseSelected(House house) {
+        HouseDetailFragment fragment = new HouseDetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("selected", house);
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
+
+    }
 }

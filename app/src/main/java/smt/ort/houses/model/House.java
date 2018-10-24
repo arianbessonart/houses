@@ -5,14 +5,17 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "houses")
-public class House {
+public class House implements Parcelable {
 
     @PrimaryKey
     @NonNull
@@ -59,6 +62,31 @@ public class House {
     @ColumnInfo(name = "photos")
     @TypeConverters({Converters.class})
     private List<String> photos;
+
+    public House() {}
+
+    protected House(Parcel in) {
+        id = in.readByte() == 0x00 ? null : in.readLong();
+        title = in.readString();
+        price = in.readByte() == 0x00 ? null : in.readFloat();
+        rooms = in.readByte() == 0x00 ? null : in.readInt();
+        bathrooms = in.readByte() == 0x00 ? null : in.readInt();
+        squareMeters = in.readByte() == 0x00 ? null : in.readInt();
+        byte hasGarageVal = in.readByte();
+        hasGarage = hasGarageVal == 0x02 ? null : hasGarageVal != 0x00;
+        byte hasBarbequeVal = in.readByte();
+        hasBarbeque = hasBarbequeVal == 0x02 ? null : hasBarbequeVal != 0x00;
+        byte hasBalconyVal = in.readByte();
+        hasBalcony = hasBalconyVal == 0x02 ? null : hasBalconyVal != 0x00;
+        byte hasGardenVal = in.readByte();
+        hasGarden = hasGardenVal == 0x02 ? null : hasGardenVal != 0x00;
+        if (in.readByte() == 0x01) {
+            photos = new ArrayList<>();
+            in.readList(photos, String.class.getClassLoader());
+        } else {
+            photos = null;
+        }
+    }
 
     public Long getId() {
         return id;
@@ -147,4 +175,83 @@ public class House {
     public void setPhotos(List<String> photos) {
         this.photos = photos;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeLong(id);
+        }
+        dest.writeString(title);
+        if (price == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeFloat(price);
+        }
+        if (rooms == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(rooms);
+        }
+        if (bathrooms == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(bathrooms);
+        }
+        if (squareMeters == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(squareMeters);
+        }
+        if (hasGarage == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (hasGarage ? 0x01 : 0x00));
+        }
+        if (hasBarbeque == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (hasBarbeque ? 0x01 : 0x00));
+        }
+        if (hasBalcony == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (hasBalcony ? 0x01 : 0x00));
+        }
+        if (hasGarden == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (hasGarden ? 0x01 : 0x00));
+        }
+        if (photos == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(photos);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<House> CREATOR = new Parcelable.Creator<House>() {
+        @Override
+        public House createFromParcel(Parcel in) {
+            return new House(in);
+        }
+
+        @Override
+        public House[] newArray(int size) {
+            return new House[size];
+        }
+    };
 }
