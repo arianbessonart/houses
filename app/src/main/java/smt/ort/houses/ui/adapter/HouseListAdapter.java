@@ -9,18 +9,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.text.NumberFormat;
 import java.util.List;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
-import smt.ort.houses.task.DownloadingImageTask;
 
 public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.HouseViewHolder> {
 
     private final LayoutInflater mInflater;
-    private List<House> houses;
     OnHouseListListener listener;
+    private List<House> houses;
 
     public HouseListAdapter(Context context, OnHouseListListener listener) {
         mInflater = LayoutInflater.from(context);
@@ -43,9 +44,8 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
 
         holder.priceTextView.setText(formattedPrice);
         if (hCurrent.getPhotos().size() > 0) {
-            new DownloadingImageTask(holder.imageView).execute(hCurrent.getPhotos().get(0));
+            Picasso.get().load(hCurrent.getPhotos().get(0)).into(holder.imageView);
         }
-
     }
 
     public void setHouses(List<House> houses) {

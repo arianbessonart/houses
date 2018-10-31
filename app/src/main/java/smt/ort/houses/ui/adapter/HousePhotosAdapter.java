@@ -8,12 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import smt.ort.houses.R;
-import smt.ort.houses.task.DownloadingImageTask;
 
 public class HousePhotosAdapter extends PagerAdapter {
 
@@ -31,7 +30,8 @@ public class HousePhotosAdapter extends PagerAdapter {
         View itemView = mLayoutInflater.inflate(R.layout.photo_pager_item, container, false);
         ImageView imageView = itemView.findViewById(R.id.imageViewDetailPhoto);
 
-        new DownloadingImageTask(imageView).execute(mPhotos.get(position));
+        Picasso.get().load(mPhotos.get(position)).into(imageView);
+
         container.addView(itemView);
 
         return itemView;
