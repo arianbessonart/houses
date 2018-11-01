@@ -53,6 +53,12 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
                 result.removeSource(dbSource);
                 if (response.isSuccessful()) {
                     saveResultAndReInit(response);
+                    result.addSource(loadFromDb(), new Observer<ResultType>() {
+                        @Override
+                        public void onChanged(@Nullable ResultType newData) {
+                            result.setValue(Resource.success(newData));
+                        }
+                    });
                 } else {
                     onFetchFailed();
                     result.addSource(dbSource, new Observer<ResultType>() {

@@ -17,61 +17,68 @@ import java.util.List;
 @Entity(tableName = "houses")
 public class House implements Parcelable {
 
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<House> CREATOR = new Parcelable.Creator<House>() {
+        @Override
+        public House createFromParcel(Parcel in) {
+            return new House(in);
+        }
+
+        @Override
+        public House[] newArray(int size) {
+            return new House[size];
+        }
+    };
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
-    private Long id;
-
-    @NonNull
+    @SerializedName("InmuebleId")
+    private String id;
     @ColumnInfo(name = "title")
+    @SerializedName("InmuebleTitulo")
     private String title;
-
-    @SerializedName("price")
     @ColumnInfo(name = "price")
-    private Float price;
-
-    @SerializedName("rooms")
+    @SerializedName("InmueblePrecio")
+    private String price;
+    @ColumnInfo(name = "neighborhood")
+    @SerializedName("InmuebleBarrio")
+    private String neighborhood;
     @ColumnInfo(name = "rooms")
+    @SerializedName("InmuebleCantDormitorio")
     private Integer rooms;
-
-    @SerializedName("bathrooms")
-    @ColumnInfo(name = "bathrooms")
-    private Integer bathrooms;
-
-    @SerializedName("squareMeters")
     @ColumnInfo(name = "squareMeters")
-    private Integer squareMeters;
-
-    @SerializedName("hasGarage")
+    @SerializedName("InmuebleMetrosCuadrados")
+    private String squareMeters;
     @ColumnInfo(name = "hasGarage")
+    @SerializedName("InmuebleTieneGarage")
     private Boolean hasGarage;
-
-    @SerializedName("hasBarbeque")
     @ColumnInfo(name = "hasBarbeque")
+    @SerializedName("InmuebleTieneParrillero")
     private Boolean hasBarbeque;
-
-    @SerializedName("hasBalcony")
     @ColumnInfo(name = "hasBalcony")
+    @SerializedName("InmuebleTieneBalcon")
     private Boolean hasBalcony;
-
-    @SerializedName("hasGarden")
     @ColumnInfo(name = "hasGarden")
+    @SerializedName("InmuebleTienePatio")
     private Boolean hasGarden;
-
-    @SerializedName("photos")
     @ColumnInfo(name = "photos")
+    @SerializedName("Fotos")
     @TypeConverters({Converters.class})
-    private List<String> photos;
+    private List<Photo> photos;
+    @ColumnInfo(name = "favorite")
+    @SerializedName("Favorito")
+    private Boolean favorite;
 
-    public House() {}
+    public House() {
+    }
 
     protected House(Parcel in) {
-        id = in.readByte() == 0x00 ? null : in.readLong();
+        id = in.readString();
         title = in.readString();
-        price = in.readByte() == 0x00 ? null : in.readFloat();
+        price = in.readString();
+        neighborhood = in.readString();
         rooms = in.readByte() == 0x00 ? null : in.readInt();
-        bathrooms = in.readByte() == 0x00 ? null : in.readInt();
-        squareMeters = in.readByte() == 0x00 ? null : in.readInt();
+        squareMeters = in.readString();
         byte hasGarageVal = in.readByte();
         hasGarage = hasGarageVal == 0x02 ? null : hasGarageVal != 0x00;
         byte hasBarbequeVal = in.readByte();
@@ -81,18 +88,20 @@ public class House implements Parcelable {
         byte hasGardenVal = in.readByte();
         hasGarden = hasGardenVal == 0x02 ? null : hasGardenVal != 0x00;
         if (in.readByte() == 0x01) {
-            photos = new ArrayList<>();
-            in.readList(photos, String.class.getClassLoader());
+            photos = new ArrayList<Photo>();
+            in.readList(photos, Photo.class.getClassLoader());
         } else {
             photos = null;
         }
+        byte favoriteVal = in.readByte();
+        favorite = favoriteVal == 0x02 ? null : favoriteVal != 0x00;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -104,12 +113,20 @@ public class House implements Parcelable {
         this.title = title;
     }
 
-    public Float getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getNeighborhood() {
+        return neighborhood;
+    }
+
+    public void setNeighborhood(String neighborhood) {
+        this.neighborhood = neighborhood;
     }
 
     public Integer getRooms() {
@@ -120,19 +137,11 @@ public class House implements Parcelable {
         this.rooms = rooms;
     }
 
-    public Integer getBathrooms() {
-        return bathrooms;
-    }
-
-    public void setBathrooms(Integer bathrooms) {
-        this.bathrooms = bathrooms;
-    }
-
-    public Integer getSquareMeters() {
+    public String getSquareMeters() {
         return squareMeters;
     }
 
-    public void setSquareMeters(Integer squareMeters) {
+    public void setSquareMeters(String squareMeters) {
         this.squareMeters = squareMeters;
     }
 
@@ -168,12 +177,20 @@ public class House implements Parcelable {
         this.hasGarden = hasGarden;
     }
 
-    public List<String> getPhotos() {
+    public List<Photo> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<String> photos) {
+    public void setPhotos(List<Photo> photos) {
         this.photos = photos;
+    }
+
+    public Boolean getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        this.favorite = favorite;
     }
 
     @Override
@@ -183,37 +200,17 @@ public class House implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        if (id == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeLong(id);
-        }
+        dest.writeString(id);
         dest.writeString(title);
-        if (price == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeFloat(price);
-        }
+        dest.writeString(price);
+        dest.writeString(neighborhood);
         if (rooms == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeInt(rooms);
         }
-        if (bathrooms == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(bathrooms);
-        }
-        if (squareMeters == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(squareMeters);
-        }
+        dest.writeString(squareMeters);
         if (hasGarage == null) {
             dest.writeByte((byte) (0x02));
         } else {
@@ -240,18 +237,10 @@ public class House implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(photos);
         }
+        if (favorite == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (favorite ? 0x01 : 0x00));
+        }
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<House> CREATOR = new Parcelable.Creator<House>() {
-        @Override
-        public House createFromParcel(Parcel in) {
-            return new House(in);
-        }
-
-        @Override
-        public House[] newArray(int size) {
-            return new House[size];
-        }
-    };
 }

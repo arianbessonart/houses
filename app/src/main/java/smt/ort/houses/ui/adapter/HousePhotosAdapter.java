@@ -13,13 +13,14 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import smt.ort.houses.R;
+import smt.ort.houses.model.Photo;
 
 public class HousePhotosAdapter extends PagerAdapter {
 
     LayoutInflater mLayoutInflater;
-    List<String> mPhotos;
+    List<Photo> mPhotos;
 
-    public HousePhotosAdapter(Context ctx, List<String> photos) {
+    public HousePhotosAdapter(Context ctx, List<Photo> photos) {
         mLayoutInflater = LayoutInflater.from(ctx);
         mPhotos = photos;
     }
@@ -30,7 +31,7 @@ public class HousePhotosAdapter extends PagerAdapter {
         View itemView = mLayoutInflater.inflate(R.layout.photo_pager_item, container, false);
         ImageView imageView = itemView.findViewById(R.id.imageViewDetailPhoto);
 
-        Picasso.get().load(mPhotos.get(position)).into(imageView);
+        Picasso.get().load(mPhotos.get(position).getUrl()).into(imageView);
 
         container.addView(itemView);
 

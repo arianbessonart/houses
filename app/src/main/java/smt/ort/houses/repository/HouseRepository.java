@@ -2,6 +2,8 @@ package smt.ort.houses.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -9,6 +11,8 @@ import java.util.List;
 import smt.ort.houses.db.HouseDao;
 import smt.ort.houses.db.HouseRoomDatabase;
 import smt.ort.houses.model.House;
+import smt.ort.houses.model.HouseFilters;
+import smt.ort.houses.model.ResponseHouses;
 import smt.ort.houses.network.ApiResponse;
 import smt.ort.houses.network.ClientService;
 import smt.ort.houses.network.HousesService;
@@ -22,22 +26,23 @@ public class HouseRepository {
     private HousesService service;
 
     public HouseRepository(Application app) {
+        SharedPreferences sharedPreferences = app.getSharedPreferences("general", Context.MODE_PRIVATE);
         HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
         dao = db.houseDao();
-        service = ClientService.getClient().create(HousesService.class);
+        service = ClientService.getClient(sharedPreferences.getString("authorization", "9876")).create(HousesService.class);
     }
 
     public LiveData<Resource<List<House>>> getHouses() {
-        return new NetworkBoundResource<List<House>, List<House>>() {
+        return new NetworkBoundResource<List<House>, ResponseHouses>() {
 
             @Override
-            protected void saveCallResult(@NonNull List<House> item) {
-                dao.insertHouses(item);
+            protected void saveCallResult(@NonNull ResponseHouses item) {
+                dao.insertHouses(item.getList());
             }
 
             @Override
             protected boolean shouldFetch(@NonNull List<House> data) {
-                return true;
+                return data == null || data.size() == 0;
             }
 
             @Override
@@ -46,9 +51,13 @@ public class HouseRepository {
             }
 
             @Override
-            protected LiveData<ApiResponse<List<House>>> createCall() {
-                return service.getHouses();
+            protected LiveData<ApiResponse<ResponseHouses>> createCall() {
+                return service.getHouses(new HouseFilters());
             }
         }.getAsLiveData();
+    }
+
+    public void saveHouse(House house) {
+
     }
 }

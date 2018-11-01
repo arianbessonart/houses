@@ -27,4 +27,20 @@ public class Converters {
         return new Gson().toJson(list);
     }
 
+    @TypeConverter
+    public static List<Photo> stringToListPhoto(String data) {
+        if (data == null) {
+            return Collections.emptyList();
+        }
+
+        Type listType = new TypeToken<List<Photo>>() {
+        }.getType();
+        return new Gson().fromJson(data, listType);
+    }
+
+    @TypeConverter
+    public static String listPhotoToString(List<Photo> list) {
+        return new Gson().toJson(list);
+    }
+
 }

@@ -39,12 +39,13 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
     public void onBindViewHolder(@NonNull HouseViewHolder holder, int position) {
         House hCurrent = houses.get(position);
         holder.titleView.setText(hCurrent.getTitle());
-        NumberFormat format = NumberFormat.getCurrencyInstance();
-        String formattedPrice = format.format(hCurrent.getPrice());
+        String formattedPrice = hCurrent.getPrice();
 
         holder.priceTextView.setText(formattedPrice);
         if (hCurrent.getPhotos().size() > 0) {
-            Picasso.get().load(hCurrent.getPhotos().get(0)).into(holder.imageView);
+            Picasso.get().load(hCurrent.getPhotos().get(0).getUrl()).placeholder(R.drawable.camera).into(holder.imageView);
+        } else {
+            Picasso.get().load(R.drawable.camera).into(holder.imageView);
         }
     }
 

@@ -2,14 +2,14 @@ package smt.ort.houses.network;
 
 import android.arch.lifecycle.LiveData;
 
-import java.util.List;
-
-import retrofit2.http.GET;
-import smt.ort.houses.model.House;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+import smt.ort.houses.model.HouseFilters;
+import smt.ort.houses.model.ResponseHouses;
 
 public interface HousesService {
 
-    @GET("5bbe51b934000078006fcade/")
-    LiveData<ApiResponse<List<House>>> getHouses();
+    @POST("buscarInmueble/")
+    LiveData<ApiResponse<ResponseHouses>> getHouses(@Body HouseFilters filters);
 
 }
