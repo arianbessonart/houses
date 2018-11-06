@@ -3,4 +3,5 @@
     <dimen name="margin_left_house_card">10dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="nav_header_padding_left">30dp</dimen>
+    <dimen name="photo_image_view_height">240dp</dimen>
 </resources>

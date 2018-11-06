@@ -1,15 +1,22 @@
 package smt.ort.houses.repository;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.List;
 
 import smt.ort.houses.db.HouseDao;
 import smt.ort.houses.db.HouseRoomDatabase;
+import smt.ort.houses.model.FavoriteBodyRequest;
+import smt.ort.houses.model.FavoriteBodyResponse;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.HouseFilters;
 import smt.ort.houses.model.ResponseHouses;
@@ -42,7 +49,9 @@ public class HouseRepository {
 
             @Override
             protected boolean shouldFetch(@NonNull List<House> data) {
-                return data == null || data.size() == 0;
+                // TODO: change this
+                return true;
+//                return data.size() == 0;
             }
 
             @Override
@@ -57,7 +66,40 @@ public class HouseRepository {
         }.getAsLiveData();
     }
 
-    public void saveHouse(House house) {
+    public LiveData<Resource<House>> getHouse(final String id) {
 
+        return new NetworkBoundResource<House, ResponseHouses>() {
+
+            @Override
+            protected void saveCallResult(@NonNull ResponseHouses item) {
+            }
+
+            @Override
+            protected boolean shouldFetch(@NonNull House data) {
+                return false;
+            }
+
+            @Override
+            protected LiveData<House> loadFromDb() {
+                return dao.getHouse(id);
+            }
+
+            @Override
+            protected LiveData<ApiResponse<ResponseHouses>> createCall() {
+                return new MutableLiveData<>();
+            }
+        }.getAsLiveData();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public void toggleFavorite(final House house) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                dao.update(house);
+//                service.addFavorite(new FavoriteBodyRequest(house.getId())).getValue();
+                return null;
+            }
+        }.execute();
     }
 }

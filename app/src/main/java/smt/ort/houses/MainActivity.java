@@ -15,7 +15,7 @@ import android.view.MenuItem;
 
 import smt.ort.houses.model.House;
 import smt.ort.houses.ui.HomeFragment;
-import smt.ort.houses.ui.HouseDetailFragment;
+import smt.ort.houses.ui.housedetail.HouseDetailFragment;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnHouseSelectedListener {
 

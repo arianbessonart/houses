@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.List;
 
 import smt.ort.houses.R;
@@ -39,9 +40,19 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
     public void onBindViewHolder(@NonNull HouseViewHolder holder, int position) {
         House hCurrent = houses.get(position);
         holder.titleView.setText(hCurrent.getTitle());
-        String formattedPrice = hCurrent.getPrice();
 
+        // Set price
+        String formattedPrice = hCurrent.getPrice();
+        try {
+            Float floatPrice = Float.parseFloat(hCurrent.getPrice());
+            NumberFormat format = NumberFormat.getCurrencyInstance();
+            formattedPrice = format.format(floatPrice);
+        } catch (NumberFormatException e) {
+            // swallow catch
+        }
         holder.priceTextView.setText(formattedPrice);
+
+        // Set photo
         if (hCurrent.getPhotos().size() > 0) {
             Picasso.get().load(hCurrent.getPhotos().get(0).getUrl()).placeholder(R.drawable.camera).into(holder.imageView);
         } else {
