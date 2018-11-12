@@ -4,19 +4,17 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.List;
 
 import smt.ort.houses.db.HouseDao;
 import smt.ort.houses.db.HouseRoomDatabase;
 import smt.ort.houses.model.FavoriteBodyRequest;
-import smt.ort.houses.model.FavoriteBodyResponse;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.HouseFilters;
 import smt.ort.houses.model.ResponseHouses;
@@ -97,9 +95,41 @@ public class HouseRepository {
             @Override
             protected Void doInBackground(Void... voids) {
                 dao.update(house);
-//                service.addFavorite(new FavoriteBodyRequest(house.getId())).getValue();
+                try {
+                    service.addFavorite(new FavoriteBodyRequest(house.getId()));
+                } catch (Exception e) {
+                    Log.e("FAVORITE", e.getMessage());
+                }
                 return null;
             }
         }.execute();
     }
+
+    public LiveData<Resource<List<House>>> getFavorites() {
+        return new NetworkBoundResource<List<House>, ResponseHouses>() {
+
+            @Override
+            protected void saveCallResult(@NonNull ResponseHouses item) {
+//                dao.insertFavorites(item.getList());
+            }
+
+            @Override
+            protected boolean shouldFetch(@NonNull List<House> data) {
+                // TODO: change this
+                return true;
+//                return data.size() == 0;
+            }
+
+            @Override
+            protected LiveData<List<House>> loadFromDb() {
+                return dao.getAllHouses();
+            }
+
+            @Override
+            protected LiveData<ApiResponse<ResponseHouses>> createCall() {
+                return service.getFavorites();
+            }
+        }.getAsLiveData();
+    }
+
 }

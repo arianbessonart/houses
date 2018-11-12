@@ -41,4 +41,33 @@ public class ClientService {
         return retrofit;
     }
 
+    public static Retrofit getClientDebug(final String authorization) {
+
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request();
+
+                Request.Builder builder = request.newBuilder();
+                if (authorization != null) {
+                    builder.addHeader("Authorization", authorization);
+                }
+
+                Request newRequest = builder.build();
+                Response mainResponse = chain.proceed(newRequest);
+                return mainResponse;
+            }
+        };
+
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://173.233.86.183:8080/CursoAndroidWebApp/rest/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        return retrofit;
+    }
+
 }

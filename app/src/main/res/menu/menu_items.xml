@@ -3,13 +3,23 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/home_item"
-            android:icon="@drawable/baseline_home_black"
+            android:icon="@drawable/baseline_home_24"
             android:title="@string/home"
         />
         <item
             android:id="@+id/favorite_item"
             android:icon="@drawable/baseline_favorite_border_24"
             android:title="@string/favorite"
+            />
+        <item
+            android:id="@+id/terms_item"
+            android:icon="@drawable/baseline_text_fields_24"
+            android:title="@string/terms"
+            />
+        <item
+            android:id="@+id/help_video_item"
+            android:icon="@drawable/baseline_text_fields_24"
+            android:title="@string/help"
             />
     </group>
 </menu>

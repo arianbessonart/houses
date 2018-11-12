@@ -32,4 +32,7 @@ public interface HouseDao {
 
     @Update
     void update(House house);
+
+
+
 }

@@ -14,8 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import smt.ort.houses.model.House;
+import smt.ort.houses.ui.HelpFragment;
 import smt.ort.houses.ui.HomeFragment;
 import smt.ort.houses.ui.housedetail.HouseDetailFragment;
+import smt.ort.houses.ui.terms.TermsFragment;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnHouseSelectedListener {
 
@@ -48,6 +50,12 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         switch (item.getItemId()) {
             case R.id.home_item:
                 fragmentClass = HomeFragment.class;
+                break;
+            case R.id.terms_item:
+                fragmentClass = TermsFragment.class;
+                break;
+            case R.id.help_video_item:
+                fragmentClass = HelpFragment.class;
                 break;
             default:
                 fragmentClass = HomeFragment.class;

@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import smt.ort.houses.R;
 import smt.ort.houses.model.House;
 import smt.ort.houses.network.Resource;
 import smt.ort.houses.ui.adapter.HousePhotosAdapter;
+import smt.ort.houses.ui.dialog.FilterDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,7 +77,7 @@ public class HouseDetailFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.toolbar_items, menu);
+        inflater.inflate(R.menu.toolbar_items_detail, menu);
         super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
     }
@@ -102,8 +104,6 @@ public class HouseDetailFragment extends Fragment {
             case R.id.favorite_action_item:
                 house.setFavorite(!house.getFavorite());
                 viewModel.toggleFavorite(house);
-                return true;
-            case R.id.search_action_item:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
