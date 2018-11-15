@@ -12,6 +12,11 @@
             android:title="@string/favorite"
             />
         <item
+            android:id="@+id/settings_item"
+            android:icon="@drawable/settings"
+            android:title="@string/action_settings"
+            />
+        <item
             android:id="@+id/terms_item"
             android:icon="@drawable/baseline_text_fields_24"
             android:title="@string/terms"
