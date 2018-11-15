@@ -45,7 +45,7 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
 
-        loginButton = (LoginButton) view.findViewById(R.id.login_button);
+        loginButton = view.findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("email"));
         loginButton.setFragment(this);
 
