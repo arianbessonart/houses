@@ -41,7 +41,7 @@ public class ClientService {
         return retrofit;
     }
 
-    public static Retrofit getClientDebug(final String authorization) {
+    public static Retrofit getClientCall(final String authorization) {
 
         Interceptor interceptor = new Interceptor() {
             @Override

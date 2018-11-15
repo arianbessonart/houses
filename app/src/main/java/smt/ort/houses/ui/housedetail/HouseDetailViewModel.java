@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 
 import smt.ort.houses.model.House;
 import smt.ort.houses.network.Resource;
+import smt.ort.houses.network.utils.AppExecutors;
 import smt.ort.houses.repository.HouseRepository;
 
 public class HouseDetailViewModel extends AndroidViewModel {
@@ -19,7 +20,7 @@ public class HouseDetailViewModel extends AndroidViewModel {
 
     public HouseDetailViewModel(@NonNull Application application, final String houseID) {
         super(application);
-        repository = new HouseRepository(application);
+        repository = new HouseRepository(new AppExecutors(),application);
         house = repository.getHouse(houseID);
     }
 

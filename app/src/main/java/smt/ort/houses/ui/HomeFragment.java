@@ -1,11 +1,9 @@
 package smt.ort.houses.ui;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -20,12 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.HouseFilters;
-import smt.ort.houses.network.Resource;
 import smt.ort.houses.ui.adapter.HouseListAdapter;
 import smt.ort.houses.ui.adapter.OnHouseListListener;
 import smt.ort.houses.ui.dialog.FilterDialog;
@@ -37,6 +32,7 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
     private HouseViewModel houseViewModel;
     private OnHouseSelectedListener listener;
     private SearchView searchView;
+    private HouseFilters houseFilters;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -74,11 +70,14 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
         houseViewModel = ViewModelProviders.of(this).get(HouseViewModel.class);
-        houseViewModel.getHouses().observe(this, new Observer<Resource<List<House>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<List<House>> houses) {
-                adapter.setHouses(houses.getData());
-            }
+        houseViewModel.getHouses().observe(this, houses -> adapter.setHouses(houses.getData()));
+
+//        houseViewModel.getFilters().observe(this, filters -> Log.d("OnChangedFilter", filters.getPrice()));
+
+        houseViewModel.setFilters(new HouseFilters());
+
+        houseViewModel.getFilters().observe(this, filters -> {
+            houseFilters = filters;
         });
 
         return view;
@@ -93,6 +92,8 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                houseFilters.setTitle(s);
+                houseViewModel.setFilters(houseFilters);
                 return false;
             }
 
@@ -144,11 +145,13 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
 
     @Override
     public void onDialogPositiveClick(HouseFilters filters) {
-        Log.d("OnApply", "" + filters.getTitle());
+        Log.d("OnApply", "" + filters.getPrice());
+        houseViewModel.setFilters(filters);
     }
 
     @Override
-    public void onDialogNegativeClick() {}
+    public void onDialogNegativeClick() {
+    }
 
     public interface OnHouseSelectedListener {
         void onHouseSelected(House house);

@@ -14,8 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import smt.ort.houses.R;
@@ -66,21 +69,15 @@ public class FilterDialog extends DialogFragment {
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             d.getWindow().setLayout(width, height);
             ImageView imageView = d.findViewById(R.id.clear_filter_dialog);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dismiss();
-                    listener.onDialogNegativeClick();
-                }
+            imageView.setOnClickListener(view -> {
+                dismiss();
+                listener.onDialogNegativeClick();
             });
 
             TextView textView = d.findViewById(R.id.apply_button_dialog);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dismiss();
-                    listener.onDialogPositiveClick(houseFilters);
-                }
+            textView.setOnClickListener(view -> {
+                dismiss();
+                listener.onDialogPositiveClick(houseFilters);
             });
 
             SeekBar priceItem = d.findViewById(R.id.price_item_dialog);
@@ -103,6 +100,22 @@ public class FilterDialog extends DialogFragment {
                 }
             });
 
+            Switch filterGarage = d.findViewById(R.id.filter_garage);
+            Switch filterBarbecue = d.findViewById(R.id.filter_barbecue);
+
+            filterGarage.setOnCheckedChangeListener((compoundButton, b) -> houseFilters.setHasGarage(b ? true : null));
+
+            filterBarbecue.setOnCheckedChangeListener((compoundButton, b) -> houseFilters.setHasBarbecue(b ? true : null));
+
+            Button roomsCant1 = d.findViewById(R.id.rooms_cant_1);
+            Button roomsCant2 = d.findViewById(R.id.rooms_cant_2);
+            Button roomsCant3 = d.findViewById(R.id.rooms_cant_3);
+            Button roomsCant4 = d.findViewById(R.id.rooms_cant_4);
+
+            roomsCant1.setOnClickListener(view -> houseFilters.setRooms(1));
+            roomsCant2.setOnClickListener(view -> houseFilters.setRooms(2));
+            roomsCant3.setOnClickListener(view -> houseFilters.setRooms(3));
+            roomsCant4.setOnClickListener(view -> houseFilters.setRooms(4));
         }
     }
 

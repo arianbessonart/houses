@@ -4,8 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class HouseFilters {
 
+    public static final Integer MAX_RESULTS = Integer.MAX_VALUE;
+
     @SerializedName("MaxResults")
-    private Integer maxResults = 20;
+    private Integer maxResults = 10;
 
     @SerializedName("Titulo")
     private String title;
@@ -14,13 +16,13 @@ public class HouseFilters {
     private String neighborhood;
 
     @SerializedName("Precio")
-    private String price = String.valueOf(Integer.MAX_VALUE);
+    private String price = String.valueOf(MAX_RESULTS);
 
     @SerializedName("CantDormitorio")
-    private String rooms;
+    private Integer rooms;
 
     @SerializedName("TieneParrillero")
-    private Boolean hasBarbeque;
+    private Boolean hasBarbecue;
 
     @SerializedName("TieneGarage")
     private Boolean hasGarage;
@@ -63,20 +65,20 @@ public class HouseFilters {
         this.price = price;
     }
 
-    public String getRooms() {
+    public Integer getRooms() {
         return rooms;
     }
 
-    public void setRooms(String rooms) {
+    public void setRooms(Integer rooms) {
         this.rooms = rooms;
     }
 
-    public Boolean getHasBarbeque() {
-        return hasBarbeque;
+    public Boolean getHasBarbecue() {
+        return hasBarbecue;
     }
 
-    public void setHasBarbeque(Boolean hasBarbeque) {
-        this.hasBarbeque = hasBarbeque;
+    public void setHasBarbecue(Boolean hasBarbecue) {
+        this.hasBarbecue = hasBarbecue;
     }
 
     public Boolean getHasGarage() {

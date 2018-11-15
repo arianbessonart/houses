@@ -8,13 +8,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import smt.ort.houses.db.HouseDao;
 import smt.ort.houses.db.HouseRoomDatabase;
 import smt.ort.houses.model.FavoriteBodyRequest;
+import smt.ort.houses.model.FavoriteBodyResponse;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.HouseFilters;
 import smt.ort.houses.model.ResponseHouses;
@@ -22,23 +27,25 @@ import smt.ort.houses.network.ApiResponse;
 import smt.ort.houses.network.ClientService;
 import smt.ort.houses.network.HousesService;
 import smt.ort.houses.network.Resource;
+import smt.ort.houses.network.utils.AppExecutors;
 import smt.ort.houses.network.utils.NetworkBoundResource;
 
 public class HouseRepository {
 
+    private final AppExecutors mAppExecutors;
     private HouseDao dao;
-
     private HousesService service;
 
-    public HouseRepository(Application app) {
+    public HouseRepository(AppExecutors appExecutors, Application app) {
+        mAppExecutors = appExecutors;
         SharedPreferences sharedPreferences = app.getSharedPreferences("general", Context.MODE_PRIVATE);
         HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
         dao = db.houseDao();
         service = ClientService.getClient(sharedPreferences.getString("authorization", "9876")).create(HousesService.class);
     }
 
-    public LiveData<Resource<List<House>>> getHouses() {
-        return new NetworkBoundResource<List<House>, ResponseHouses>() {
+    public LiveData<Resource<List<House>>> getHouses(final HouseFilters filters) {
+        return new NetworkBoundResource<List<House>, ResponseHouses>(mAppExecutors) {
 
             @Override
             protected void saveCallResult(@NonNull ResponseHouses item) {
@@ -46,27 +53,27 @@ public class HouseRepository {
             }
 
             @Override
-            protected boolean shouldFetch(@NonNull List<House> data) {
-                // TODO: change this
-                return true;
-//                return data.size() == 0;
+            protected boolean shouldFetch(@Nullable List<House> data) {
+                return data == null || data.isEmpty();
             }
 
             @Override
             protected LiveData<List<House>> loadFromDb() {
-                return dao.getAllHouses();
+                String title = filters.getTitle();
+                String titleFilter = title != null && !title.equals("") ? "%" + filters.getTitle() + "%" : null;
+                return dao.getHousesByFilters(titleFilter, filters.getRooms(), filters.getMaxResults());
             }
 
             @Override
             protected LiveData<ApiResponse<ResponseHouses>> createCall() {
-                return service.getHouses(new HouseFilters());
+                return service.getHouses(filters);
             }
         }.getAsLiveData();
     }
 
     public LiveData<Resource<House>> getHouse(final String id) {
 
-        return new NetworkBoundResource<House, ResponseHouses>() {
+        return new NetworkBoundResource<House, ResponseHouses>(mAppExecutors) {
 
             @Override
             protected void saveCallResult(@NonNull ResponseHouses item) {
@@ -89,6 +96,34 @@ public class HouseRepository {
         }.getAsLiveData();
     }
 
+    public LiveData<Resource<List<House>>> searchHouses(final String query) {
+        return new NetworkBoundResource<List<House>, ResponseHouses>(mAppExecutors) {
+
+            @Override
+            protected void saveCallResult(@NonNull ResponseHouses item) {
+                dao.insertHouses(item.getList());
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<House> data) {
+                return data == null || data.isEmpty();
+            }
+
+            @Override
+            protected LiveData<List<House>> loadFromDb() {
+                String titleFilter = query != null && !query.equals("") ? "%" + query + "%" : null;
+                return dao.getHousesByFilters(titleFilter, null, Integer.MAX_VALUE);
+            }
+
+            @Override
+            protected LiveData<ApiResponse<ResponseHouses>> createCall() {
+                HouseFilters filters = new HouseFilters();
+                filters.setTitle(query);
+                return service.getHouses(filters);
+            }
+        }.getAsLiveData();
+    }
+
     @SuppressLint("StaticFieldLeak")
     public void toggleFavorite(final House house) {
         new AsyncTask<Void, Void, Void>() {
@@ -96,40 +131,24 @@ public class HouseRepository {
             protected Void doInBackground(Void... voids) {
                 dao.update(house);
                 try {
-                    service.addFavorite(new FavoriteBodyRequest(house.getId()));
+                    HousesService serviceDebug = ClientService.getClientCall("9876").create(HousesService.class);
+                    serviceDebug.addFavorite(new FavoriteBodyRequest(house.getId())).enqueue(new Callback<ApiResponse<FavoriteBodyResponse>>() {
+                        @Override
+                        public void onResponse(Call<ApiResponse<FavoriteBodyResponse>> call, Response<ApiResponse<FavoriteBodyResponse>> response) {
+                            Log.d("onResponse", response.message());
+                        }
+
+                        @Override
+                        public void onFailure(Call<ApiResponse<FavoriteBodyResponse>> call, Throwable t) {
+                            Log.d("onFailure", t.getMessage());
+                        }
+                    });
                 } catch (Exception e) {
                     Log.e("FAVORITE", e.getMessage());
                 }
                 return null;
             }
         }.execute();
-    }
-
-    public LiveData<Resource<List<House>>> getFavorites() {
-        return new NetworkBoundResource<List<House>, ResponseHouses>() {
-
-            @Override
-            protected void saveCallResult(@NonNull ResponseHouses item) {
-//                dao.insertFavorites(item.getList());
-            }
-
-            @Override
-            protected boolean shouldFetch(@NonNull List<House> data) {
-                // TODO: change this
-                return true;
-//                return data.size() == 0;
-            }
-
-            @Override
-            protected LiveData<List<House>> loadFromDb() {
-                return dao.getAllHouses();
-            }
-
-            @Override
-            protected LiveData<ApiResponse<ResponseHouses>> createCall() {
-                return service.getFavorites();
-            }
-        }.getAsLiveData();
     }
 
 }

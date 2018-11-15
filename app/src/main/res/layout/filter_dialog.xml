@@ -71,22 +71,35 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <Button
+                        android:id="@+id/rooms_cant_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1"/>
                     <Button
+                        android:id="@+id/rooms_cant_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="2"/>
                     <Button
+                        android:id="@+id/rooms_cant_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="3"/>
                     <Button
+                        android:id="@+id/rooms_cant_4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="4"/>
                 </LinearLayout>
+
+                <Switch
+                    android:id="@+id/filter_garage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <Switch
+                    android:id="@+id/filter_barbecue"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 
