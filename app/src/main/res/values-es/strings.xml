@@ -2,6 +2,7 @@
     <string name="app_name">Casas</string>
     <string name="action_settings">Ajustes</string>
     <string name="favorite">Favoritos</string>
+    <string name="loggin">Ingresar</string>
     <string name="search">Buscar</string>
     <string name="filter">Filtrar</string>
     <string name="home">Inicio</string>

@@ -12,6 +12,11 @@
             android:title="@string/favorite"
             />
         <item
+            android:id="@+id/loggin_item"
+            android:icon="@drawable/settings"
+            android:title="@string/loggin"
+            />
+        <item
             android:id="@+id/settings_item"
             android:icon="@drawable/settings"
             android:title="@string/action_settings"

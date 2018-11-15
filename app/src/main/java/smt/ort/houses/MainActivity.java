@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import smt.ort.houses.model.House;
 import smt.ort.houses.ui.HelpFragment;
 import smt.ort.houses.ui.HomeFragment;
+import smt.ort.houses.ui.LoginFragment;
 import smt.ort.houses.ui.housedetail.HouseDetailFragment;
 import smt.ort.houses.ui.terms.TermsFragment;
 
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
                 break;
             case R.id.settings_item:
                 startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));
+            case R.id.loggin_item:
+                fragmentClass = LoginFragment.class;
+                break;
             default:
                 fragmentClass = HomeFragment.class;
         }
