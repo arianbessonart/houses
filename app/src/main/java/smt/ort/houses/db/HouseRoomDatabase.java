@@ -13,7 +13,7 @@ import smt.ort.houses.model.House;
 
 @Database(entities = {
         House.class
-}, version = 5)
+}, version = 6)
 public abstract class HouseRoomDatabase extends RoomDatabase {
 
     private static volatile HouseRoomDatabase instance;

@@ -2,7 +2,7 @@
     <string name="app_name">Casas</string>
     <string name="action_settings">Ajustes</string>
     <string name="favorite">Favoritos</string>
-    <string name="loggin">Ingresar</string>
+    <string name="login">Ingresar</string>
     <string name="search">Buscar</string>
     <string name="filter">Filtrar</string>
     <string name="home">Inicio</string>
@@ -11,4 +11,6 @@
     <string name="close_navigation_drawer">Cerrar</string>
     <string name="terms">Terminos y Condiciones</string>
     <string name="help">Ayuda</string>
+    <string name="facebook_app_id">1310947972379580</string>
+    <string name="fb_login_protocol_scheme">fb1310947972379580</string>
 </resources>

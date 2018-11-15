@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
                 break;
             case R.id.settings_item:
                 startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));
-            case R.id.loggin_item:
+            case R.id.login_item:
                 fragmentClass = LoginFragment.class;
                 break;
             default:

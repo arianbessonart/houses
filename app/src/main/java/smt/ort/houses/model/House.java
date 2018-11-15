@@ -52,9 +52,9 @@ public class House implements Parcelable {
     @ColumnInfo(name = "hasGarage")
     @SerializedName("InmuebleTieneGarage")
     private Boolean hasGarage;
-    @ColumnInfo(name = "hasBarbeque")
+    @ColumnInfo(name = "hasBarbecue")
     @SerializedName("InmuebleTieneParrillero")
-    private Boolean hasBarbeque;
+    private Boolean hasBarbecue;
     @ColumnInfo(name = "hasBalcony")
     @SerializedName("InmuebleTieneBalcon")
     private Boolean hasBalcony;
@@ -82,7 +82,7 @@ public class House implements Parcelable {
         byte hasGarageVal = in.readByte();
         hasGarage = hasGarageVal == 0x02 ? null : hasGarageVal != 0x00;
         byte hasBarbequeVal = in.readByte();
-        hasBarbeque = hasBarbequeVal == 0x02 ? null : hasBarbequeVal != 0x00;
+        hasBarbecue = hasBarbequeVal == 0x02 ? null : hasBarbequeVal != 0x00;
         byte hasBalconyVal = in.readByte();
         hasBalcony = hasBalconyVal == 0x02 ? null : hasBalconyVal != 0x00;
         byte hasGardenVal = in.readByte();
@@ -153,12 +153,12 @@ public class House implements Parcelable {
         this.hasGarage = hasGarage;
     }
 
-    public Boolean getHasBarbeque() {
-        return hasBarbeque;
+    public Boolean getHasBarbecue() {
+        return hasBarbecue;
     }
 
-    public void setHasBarbeque(Boolean hasBarbeque) {
-        this.hasBarbeque = hasBarbeque;
+    public void setHasBarbecue(Boolean hasBarbecue) {
+        this.hasBarbecue = hasBarbecue;
     }
 
     public Boolean getHasBalcony() {
@@ -216,10 +216,10 @@ public class House implements Parcelable {
         } else {
             dest.writeByte((byte) (hasGarage ? 0x01 : 0x00));
         }
-        if (hasBarbeque == null) {
+        if (hasBarbecue == null) {
             dest.writeByte((byte) (0x02));
         } else {
-            dest.writeByte((byte) (hasBarbeque ? 0x01 : 0x00));
+            dest.writeByte((byte) (hasBarbecue ? 0x01 : 0x00));
         }
         if (hasBalcony == null) {
             dest.writeByte((byte) (0x02));

@@ -32,6 +32,7 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
     private HouseViewModel houseViewModel;
     private OnHouseSelectedListener listener;
     private SearchView searchView;
+    private HouseFilters houseFilters;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -87,6 +88,8 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                houseFilters.setTitle(s);
+                houseViewModel.setFilters(houseFilters);
                 return false;
             }
 
@@ -138,7 +141,8 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
 
     @Override
     public void onDialogPositiveClick(HouseFilters filters) {
-        Log.d("OnApply", "" + filters.getTitle());
+        Log.d("OnApply", "" + filters.getPrice());
+        houseViewModel.setFilters(filters);
     }
 
     @Override
