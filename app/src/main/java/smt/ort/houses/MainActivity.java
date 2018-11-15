@@ -1,6 +1,8 @@
 package smt.ort.houses;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
             case R.id.help_video_item:
                 fragmentClass = HelpFragment.class;
                 break;
+            case R.id.settings_item:
+                startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));
             default:
                 fragmentClass = HomeFragment.class;
         }
