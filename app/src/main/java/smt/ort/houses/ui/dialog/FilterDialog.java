@@ -15,11 +15,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.HouseFilters;
@@ -29,6 +31,7 @@ public class FilterDialog extends DialogFragment {
 
     private NoticeDialogListener listener;
     private HouseFilters houseFilters = new HouseFilters();
+    private Map<Integer, Button> buttons;
 
     @Override
     public void onAttach(Context context) {
@@ -107,15 +110,33 @@ public class FilterDialog extends DialogFragment {
 
             filterBarbecue.setOnCheckedChangeListener((compoundButton, b) -> houseFilters.setHasBarbecue(b ? true : null));
 
-            Button roomsCant1 = d.findViewById(R.id.rooms_cant_1);
-            Button roomsCant2 = d.findViewById(R.id.rooms_cant_2);
-            Button roomsCant3 = d.findViewById(R.id.rooms_cant_3);
-            Button roomsCant4 = d.findViewById(R.id.rooms_cant_4);
+            buttons = new HashMap<Integer, Button>() {{
+                put(1, d.findViewById(R.id.rooms_cant_1));
+                put(2, d.findViewById(R.id.rooms_cant_2));
+                put(3, d.findViewById(R.id.rooms_cant_3));
+                put(4, d.findViewById(R.id.rooms_cant_4));
+            }};
 
-            roomsCant1.setOnClickListener(view -> houseFilters.setRooms(1));
-            roomsCant2.setOnClickListener(view -> houseFilters.setRooms(2));
-            roomsCant3.setOnClickListener(view -> houseFilters.setRooms(3));
-            roomsCant4.setOnClickListener(view -> houseFilters.setRooms(4));
+            for (int i = 1; i <= 4; i++) {
+                Button btn = buttons.get(i);
+                int finalI = i;
+                btn.setOnClickListener(view -> changeButtonState(btn, finalI));
+            }
+        }
+    }
+
+    private void changeButtonState(Button btn, int quantity) {
+        if (houseFilters.getRooms() == null) {
+            btn.setSelected(true);
+            houseFilters.setRooms(quantity);
+        } else if (houseFilters.getRooms() == quantity) {
+            btn.setSelected(false);
+            houseFilters.setRooms(null);
+        } else {
+            Button btnSelected = buttons.get(houseFilters.getRooms());
+            btnSelected.setSelected(false);
+            btn.setSelected(true);
+            houseFilters.setRooms(quantity);
         }
     }
 
