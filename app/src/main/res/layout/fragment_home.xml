@@ -12,6 +12,19 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/houses_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="@string/error_loading" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

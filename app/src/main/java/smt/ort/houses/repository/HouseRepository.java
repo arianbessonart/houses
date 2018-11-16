@@ -49,7 +49,9 @@ public class HouseRepository {
 
             @Override
             protected void saveCallResult(@NonNull ResponseHouses item) {
-                dao.insertHouses(item.getList());
+                if (item.getList() != null && item.getList().size() > 0) {
+                    dao.insertHouses(item.getList());
+                }
             }
 
             @Override

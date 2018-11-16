@@ -17,6 +17,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import java.util.List;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
@@ -33,6 +37,8 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
     private OnHouseSelectedListener listener;
     private SearchView searchView;
     private HouseFilters houseFilters;
+    ProgressBar progressBar;
+    TextView errorTextView;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -63,6 +69,9 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        progressBar = view.findViewById(R.id.progressbar);
+        errorTextView = view.findViewById(R.id.houses_error);
+
         FragmentActivity activity = getActivity();
         recyclerView = view.findViewById(R.id.recyclerView);
         final HouseListAdapter adapter = new HouseListAdapter(activity, this);
@@ -71,7 +80,32 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
 
         houseViewModel = ViewModelProviders.of(this).get(HouseViewModel.class);
 
-        houseViewModel.getHouses().observe(this, houses -> adapter.setHouses(houses.getData()));
+        houseViewModel.getHouses().observe(this, housesResource -> {
+            switch (housesResource.getStatus()) {
+                case SUCCESS:
+                    progressBar.setVisibility(View.GONE);
+                    List<House> houses = housesResource.getData();
+                    if (houses != null && houses.size() > 0) {
+                        adapter.setHouses(houses);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    } else {
+                        errorTextView.setText(getResources().getString(R.string.error_no_results));
+                        errorTextView.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    }
+                    break;
+                case LOADING:
+                    progressBar.setVisibility(View.VISIBLE);
+                    errorTextView.setVisibility(View.GONE);
+                    break;
+                case ERROR:
+                    progressBar.setVisibility(View.GONE);
+                    errorTextView.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                    errorTextView.setText(housesResource.getException().getMessage());
+                    break;
+            }
+        });
 
         houseViewModel.setFilters(new HouseFilters());
         houseViewModel.getFilters().observe(this, filters -> houseFilters = filters);
@@ -109,6 +143,8 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                houseFilters.setTitle(null);
+                houseViewModel.setFilters(houseFilters);
                 return true;
             }
         });

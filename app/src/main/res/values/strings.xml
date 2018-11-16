@@ -15,4 +15,8 @@
     <string name="facebook_app_id">1310947972379580</string>
     <string name="fb_login_protocol_scheme">fb1310947972379580</string>
 
+    <!-- Error Message -->
+    <string name="error_loading">Could not fetch houses 😰!</string>
+    <string name="error_no_results">No Houses found 😔</string>
+
 </resources>

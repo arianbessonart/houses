@@ -14,4 +14,8 @@
     <string name="help">Ayuda</string>
     <string name="facebook_app_id">1310947972379580</string>
     <string name="fb_login_protocol_scheme">fb1310947972379580</string>
+
+    <!-- Error Message -->
+    <string name="error_loading">Error al obtener las casas 😰</string>
+    <string name="error_no_results">No se encontraron casas 😔</string>
 </resources>
