@@ -3,6 +3,7 @@
     <string name="action_settings">Ajustes</string>
     <string name="favorite">Favoritos</string>
     <string name="login">Ingresar</string>
+    <string name="logout">Salir</string>
     <string name="search">Buscar</string>
     <string name="filter">Filtrar</string>
     <string name="home">Inicio</string>

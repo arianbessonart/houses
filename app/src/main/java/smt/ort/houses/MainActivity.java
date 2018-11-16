@@ -3,7 +3,6 @@ package smt.ort.houses;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,8 +11,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+
+import com.facebook.FacebookException;
 
 import smt.ort.houses.model.House;
 import smt.ort.houses.ui.HelpFragment;
@@ -22,7 +22,7 @@ import smt.ort.houses.ui.LoginFragment;
 import smt.ort.houses.ui.housedetail.HouseDetailFragment;
 import smt.ort.houses.ui.terms.TermsFragment;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.OnHouseSelectedListener {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnHouseSelectedListener, LoginFragment.LoginListener {
 
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
             case R.id.settings_item:
                 startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));
             case R.id.login_item:
+            case R.id.logout_item:
                 fragmentClass = LoginFragment.class;
                 break;
             default:
@@ -83,19 +84,16 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         drawer.closeDrawers();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
 
     private void setupDrawer(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                selectDrawerItem(menuItem);
-                return true;
-            }
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            selectDrawerItem(menuItem);
+            return true;
         });
     }
 
@@ -117,5 +115,31 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
 
+    }
+
+    @Override
+    public void onLoginSuccess() {
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().findItem(R.id.login_item).setVisible(false);
+        navigationView.getMenu().findItem(R.id.logout_item).setVisible(true);
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onLoginCancel() {
+
+    }
+
+    @Override
+    public void onLoginError(FacebookException e) {
+
+    }
+
+    @Override
+    public void onLogoutSuccess() {
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().findItem(R.id.login_item).setVisible(true);
+        navigationView.getMenu().findItem(R.id.logout_item).setVisible(false);
+        invalidateOptionsMenu();
     }
 }

@@ -17,6 +17,12 @@
             android:title="@string/login"
             />
         <item
+            android:id="@+id/logout_item"
+            android:icon="@drawable/settings"
+            android:title="@string/logout"
+            android:visible="false"
+            />
+        <item
             android:id="@+id/settings_item"
             android:icon="@drawable/settings"
             android:title="@string/action_settings"
