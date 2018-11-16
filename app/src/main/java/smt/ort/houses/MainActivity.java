@@ -84,12 +84,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         drawer.closeDrawers();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-
     private void setupDrawer(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             selectDrawerItem(menuItem);
