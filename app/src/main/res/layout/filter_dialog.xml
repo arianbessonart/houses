@@ -33,89 +33,99 @@
                 android:textSize="@dimen/filter_apply_size" />
         </RelativeLayout>
 
-        <ScrollView
-            android:id="@+id/filter_scroll_view"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/min_price_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true" />
+
+                <SeekBar
+                    android:id="@+id/price_item_dialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/max_price_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/rooms_cant_1"
+                    android:layout_width="@dimen/room_button_filter"
+                    android:layout_height="@dimen/room_button_filter"
+                    android:background="@drawable/room_button_filter_selector"
+                    android:text="1"
+                    android:layout_marginLeft="@dimen/margin_rooms_filter"
+                    android:textColor="@drawable/room_button_color_filter_selector" />
+
+                <Button
+                    android:id="@+id/rooms_cant_2"
+                    android:layout_width="@dimen/room_button_filter"
+                    android:layout_height="@dimen/room_button_filter"
+                    android:background="@drawable/room_button_filter_selector"
+                    android:text="2"
+                    android:layout_marginLeft="@dimen/margin_rooms_filter"
+                    android:textColor="@drawable/room_button_color_filter_selector" />
+
+                <Button
+                    android:id="@+id/rooms_cant_3"
+                    android:layout_width="@dimen/room_button_filter"
+                    android:layout_height="@dimen/room_button_filter"
+                    android:background="@drawable/room_button_filter_selector"
+                    android:text="3"
+                    android:layout_marginLeft="@dimen/margin_rooms_filter"
+                    android:textColor="@drawable/room_button_color_filter_selector" />
+
+                <Button
+                    android:id="@+id/rooms_cant_4"
+                    android:layout_width="@dimen/room_button_filter"
+                    android:layout_height="@dimen/room_button_filter"
+                    android:background="@drawable/room_button_filter_selector"
+                    android:text="4"
+                    android:layout_marginLeft="@dimen/margin_rooms_filter"
+                    android:textColor="@drawable/room_button_color_filter_selector" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/min_price_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true" />
-
-                    <SeekBar
-                        android:id="@+id/price_item_dialog"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/max_price_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true" />
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/rooms_cant_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/room_button_filter_selector"
-                        android:text="1"
-                        android:textColor="#000000" />
-
-                    <Button
-                        android:id="@+id/rooms_cant_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/room_button_filter_selector"
-                        android:text="2"
-                        android:textColor="#000000" />
-
-                    <Button
-                        android:id="@+id/rooms_cant_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/room_button_filter_selector"
-                        android:text="3"
-                        android:textColor="#000000" />
-
-                    <Button
-                        android:id="@+id/rooms_cant_4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/room_button_filter_selector"
-                        android:text="4"
-                        android:textColor="#000000" />
-                </LinearLayout>
 
                 <Switch
                     android:id="@+id/filter_garage"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/has_garage" />
 
                 <Switch
                     android:id="@+id/filter_barbecue"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
+                    android:layout_height="wrap_content"
+                    android:text="@string/has_barbecue" />
             </LinearLayout>
 
-        </ScrollView>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

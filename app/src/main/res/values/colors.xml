@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="textColorPrimary">#FFEAE8E9</color>
+    <color name="textColorPrimary">#3b3b3b</color>
     <color name="transparent">#00ffffff</color>
-    <color name="filterSelected">#FF515151</color>
+    <color name="filterSelected">#00574B</color>
+    <color name="iconsColors">#202020</color>
 </resources>

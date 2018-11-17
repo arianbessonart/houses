@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class HouseFilters {
 
-    public static final Integer MAX_RESULTS = Integer.MAX_VALUE;
+    public static final Integer MAX_PRICE = 50000000;
+    public static final Integer MIN_PRICE = 3000000;
 
     @SerializedName("MaxResults")
     private Integer maxResults = 10;
@@ -16,7 +17,7 @@ public class HouseFilters {
     private String neighborhood;
 
     @SerializedName("Precio")
-    private String price = String.valueOf(MAX_RESULTS);
+    private String price = String.valueOf(MAX_PRICE);
 
     @SerializedName("CantDormitorio")
     private Integer rooms;

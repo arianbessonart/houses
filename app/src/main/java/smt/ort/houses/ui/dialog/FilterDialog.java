@@ -66,8 +66,8 @@ public class FilterDialog extends DialogFragment {
         if (d != null) {
             TextView minTextView = d.findViewById(R.id.min_price_text);
             TextView maxTextView = d.findViewById(R.id.max_price_text);
-            minTextView.setText("0");
-            maxTextView.setText("100000000");
+            minTextView.setText(HouseFilters.MIN_PRICE);
+            maxTextView.setText(HouseFilters.MAX_PRICE);
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             d.getWindow().setLayout(width, height);
@@ -84,8 +84,8 @@ public class FilterDialog extends DialogFragment {
             });
 
             SeekBar priceItem = d.findViewById(R.id.price_item_dialog);
-            priceItem.setMin(10);
-            priceItem.setMax(Integer.MAX_VALUE);
+            priceItem.setMin(HouseFilters.MIN_PRICE);
+            priceItem.setMax(HouseFilters.MAX_PRICE);
             priceItem.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int i, boolean b) {

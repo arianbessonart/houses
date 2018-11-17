@@ -18,5 +18,7 @@
     <!-- Error Message -->
     <string name="error_loading">Could not fetch houses 😰!</string>
     <string name="error_no_results">No Houses found 😔</string>
+    <string name="has_barbecue">Has Barbecue</string>
+    <string name="has_garage">Has Garage</string>
 
 </resources>

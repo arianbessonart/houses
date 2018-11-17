@@ -18,4 +18,6 @@
     <!-- Error Message -->
     <string name="error_loading">Error al obtener las casas 😰</string>
     <string name="error_no_results">No se encontraron casas 😔</string>
+    <string name="has_barbecue">Con Parrillero</string>
+    <string name="has_garage">Has Garaje</string>
 </resources>
