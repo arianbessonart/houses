@@ -159,7 +159,7 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
 
-                FilterDialog filterDialog = new FilterDialog();
+                FilterDialog filterDialog = FilterDialog.newInstance(houseFilters);
                 filterDialog.show(ft, "dialog");
                 filterDialog.setTargetFragment(HomeFragment.this, 1);
                 return true;
