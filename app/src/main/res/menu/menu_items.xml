@@ -10,6 +10,7 @@
             android:id="@+id/favorite_item"
             android:icon="@drawable/baseline_favorite_border_24"
             android:title="@string/favorite"
+            android:visible="false"
             />
         <item
             android:id="@+id/login_item"

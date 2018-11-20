@@ -20,7 +20,6 @@
     <TextView
         android:id="@+id/nav_header_textView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Usuario"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

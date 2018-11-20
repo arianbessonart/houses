@@ -25,6 +25,7 @@ import org.json.JSONException;
 import java.util.Arrays;
 
 import smt.ort.houses.R;
+import smt.ort.houses.model.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,10 +74,9 @@ public class LoginFragment extends Fragment {
 
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), (object, response) -> {
                     try {
+                        User user = new User(object.getString("id"), object.getString("name"), object.getString("email"));
                         Log.d("LOGIN", object.toString());
-                        object.getString("name");
-                        object.getString("email");
-                        listener.onLoginSuccess();
+                        listener.onLoginSuccess(user);
                     } catch (JSONException e) {
                         listener.onLoginError(e);
                     }
@@ -122,11 +122,12 @@ public class LoginFragment extends Fragment {
     }
 
     public interface LoginListener {
-        void onLoginSuccess();
+        void onLoginSuccess(User user);
 
         void onLoginCancel();
 
         void onLoginError(Exception e);
+
         void onLogoutSuccess();
 //        void onLogoutError(FacebookException e);
     }
