@@ -18,10 +18,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import smt.ort.houses.db.HouseDao;
 import smt.ort.houses.db.HouseRoomDatabase;
+import smt.ort.houses.model.Favorite;
 import smt.ort.houses.model.FavoriteBodyRequest;
 import smt.ort.houses.model.FavoriteBodyResponse;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.HouseFilters;
+import smt.ort.houses.model.ResponseFavorites;
 import smt.ort.houses.model.ResponseHouses;
 import smt.ort.houses.network.ApiResponse;
 import smt.ort.houses.network.ClientService;
@@ -98,30 +100,29 @@ public class HouseRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<House>>> searchHouses(final String query) {
-        return new NetworkBoundResource<List<House>, ResponseHouses>(mAppExecutors) {
+    public LiveData<Resource<List<Favorite>>> getFavorites() {
+        return new NetworkBoundResource<List<Favorite>, ResponseFavorites>(mAppExecutors) {
 
             @Override
-            protected void saveCallResult(@NonNull ResponseHouses item) {
-                dao.insertHouses(item.getList());
+            protected void saveCallResult(@NonNull ResponseFavorites item) {
+                if (item.getList() != null && item.getList().size() > 0) {
+                    dao.insertFavorites(item.getList());
+                }
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable List<House> data) {
+            protected boolean shouldFetch(@Nullable List<Favorite> data) {
                 return data == null || data.isEmpty();
             }
 
             @Override
-            protected LiveData<List<House>> loadFromDb() {
-                String titleFilter = query != null && !query.equals("") ? "%" + query + "%" : null;
-                return dao.getHousesByFilters(titleFilter, null, Integer.MAX_VALUE);
+            protected LiveData<List<Favorite>> loadFromDb() {
+                return dao.getFavorites();
             }
 
             @Override
-            protected LiveData<ApiResponse<ResponseHouses>> createCall() {
-                HouseFilters filters = new HouseFilters();
-                filters.setTitle(query);
-                return service.getHouses(filters);
+            protected LiveData<ApiResponse<ResponseFavorites>> createCall() {
+                return service.getFavorites();
             }
         }.getAsLiveData();
     }

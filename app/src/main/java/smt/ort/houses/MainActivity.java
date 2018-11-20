@@ -6,6 +6,7 @@ import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,12 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.facebook.FacebookException;
-
 import smt.ort.houses.model.House;
 import smt.ort.houses.ui.HelpFragment;
 import smt.ort.houses.ui.HomeFragment;
 import smt.ort.houses.ui.LoginFragment;
+import smt.ort.houses.ui.favorite.FavoritesFragment;
 import smt.ort.houses.ui.housedetail.HouseDetailFragment;
 import smt.ort.houses.ui.terms.TermsFragment;
 
@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
             case R.id.home_item:
                 fragmentClass = HomeFragment.class;
                 break;
+            case R.id.favorite_item:
+                fragmentClass = FavoritesFragment.class;
+                break;
             case R.id.terms_item:
                 fragmentClass = TermsFragment.class;
                 break;
@@ -76,12 +79,22 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
             e.printStackTrace();
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-
         item.setChecked(true);
-        setTitle(item.getTitle());
+        goToFragment(fragment, item.getTitle().toString(), null);
         drawer.closeDrawers();
+    }
+
+    private void goToFragment(Fragment fragment, String title, String addToBackStack) {
+        setTitle(title);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction().replace(R.id.flContent, fragment);
+        if (addToBackStack != null && !addToBackStack.isEmpty()) {
+            transaction.addToBackStack(addToBackStack);
+        } else {
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
     }
 
     private void setupDrawer(NavigationView navigationView) {
@@ -117,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         navigationView.getMenu().findItem(R.id.login_item).setVisible(false);
         navigationView.getMenu().findItem(R.id.logout_item).setVisible(true);
         invalidateOptionsMenu();
+        goToFragment(HomeFragment.newInstance(), getResources().getString(R.string.home), null);
+        getSupportFragmentManager().beginTransaction().replace(R.id.flContent, HomeFragment.newInstance()).addToBackStack(null).commit();
     }
 
     @Override
@@ -125,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
     }
 
     @Override
-    public void onLoginError(FacebookException e) {
+    public void onLoginError(Exception e) {
 
     }
 

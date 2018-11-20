@@ -16,8 +16,11 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONException;
 
 import java.util.Arrays;
 
@@ -62,11 +65,27 @@ public class LoginFragment extends Fragment {
         loginButton.setReadPermissions(Arrays.asList("email"));
         loginButton.setFragment(this);
 
+        loginButton.setReadPermissions("public_profile", "email");
+
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d("LOGIN", loginResult.toString());
-                listener.onLoginSuccess();
+
+                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), (object, response) -> {
+                    try {
+                        Log.d("LOGIN", object.toString());
+                        object.getString("name");
+                        object.getString("email");
+                        listener.onLoginSuccess();
+                    } catch (JSONException e) {
+                        listener.onLoginError(e);
+                    }
+                });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender, birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
 
             @Override
@@ -107,7 +126,7 @@ public class LoginFragment extends Fragment {
 
         void onLoginCancel();
 
-        void onLoginError(FacebookException e);
+        void onLoginError(Exception e);
         void onLogoutSuccess();
 //        void onLogoutError(FacebookException e);
     }

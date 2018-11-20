@@ -12,19 +12,19 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.List;
 
 import smt.ort.houses.R;
+import smt.ort.houses.model.Favorite;
 import smt.ort.houses.model.House;
 
-public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.HouseViewHolder> {
+public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapter.HouseViewHolder> {
 
     private final LayoutInflater mInflater;
     OnHouseListListener listener;
-    private List<House> houses;
+    private List<Favorite> houses;
 
-    public HouseListAdapter(Context context, OnHouseListListener listener) {
+    public FavoriteListAdapter(Context context, OnHouseListListener listener) {
         mInflater = LayoutInflater.from(context);
         this.listener = listener;
     }
@@ -60,7 +60,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
         }
     }
 
-    public void setHouses(List<House> houses) {
+    public void setHouses(List<Favorite> houses) {
         this.houses = houses;
         notifyDataSetChanged();
     }
