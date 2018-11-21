@@ -105,30 +105,6 @@ public class FilterDialog extends DialogFragment {
                 listener.onDialogPositiveClick(filters);
             });
 
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////
-
-//            SeekBar priceItem = d.findViewById(R.id.price_item_dialog);
-//            priceItem.setMin(HouseFilters.MIN_PRICE);
-//            priceItem.setMax(HouseFilters.MAX_PRICE);
-//            priceItem.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//                @Override
-//                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-//                    filters.setPrice(String.valueOf(i));
-//                }
-//
-//                @Override
-//                public void onStartTrackingTouch(SeekBar seekBar) {
-//                }
-//
-//                @Override
-//                public void onStopTrackingTouch(SeekBar seekBar) {
-//                }
-//            });
-//            priceItem.setProgress(Integer.parseInt(filters.getPrice()), true);
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////
-
             SignSeekBar seekBar = d.findViewById(R.id.price_item_dialog);
             seekBar.getConfigBuilder().min(HouseFilters.MIN_PRICE).max(HouseFilters.MAX_PRICE).sectionCount(20).seekBySection().build();
 
