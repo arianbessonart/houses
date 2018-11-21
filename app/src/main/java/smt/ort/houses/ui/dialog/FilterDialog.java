@@ -109,12 +109,37 @@ public class FilterDialog extends DialogFragment {
                 }
 
                 @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {}
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
 
                 @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {}
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
             });
             priceItem.setProgress(Integer.parseInt(filters.getPrice()), true);
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////
+
+//            DiscreteSeekBar discreteSeekBar = d.findViewById(R.id.price_item_dialog_seekbar);
+//            discreteSeekBar.setMin(HouseFilters.MIN_PRICE);
+//            discreteSeekBar.setMax(HouseFilters.MAX_PRICE);
+//            discreteSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+//                @Override
+//                public void onProgressChanged(DiscreteSeekBar seekBar, int i, boolean fromUser) {
+//                    filters.setPrice(String.valueOf(i));
+//                }
+//
+//                @Override
+//                public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+//                }
+//
+//                @Override
+//                public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+//                }
+//            });
+//            discreteSeekBar.setProgress(Integer.parseInt(filters.getPrice()));
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////
 
             Switch filterGarage = d.findViewById(R.id.filter_garage);
             Switch filterBarbecue = d.findViewById(R.id.filter_barbecue);
