@@ -35,12 +35,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/price_item_dialog" />
 
-    <SeekBar
+    <com.zhouyou.view.seekbar.SignSeekBar
         android:id="@+id/price_item_dialog"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="16dp"
+        app:ssb_section_text_position="bottom_sides"
+        app:ssb_show_progress_in_float="false"
+        app:ssb_show_section_mark="true"
+        app:ssb_show_section_text="true"
+        app:ssb_second_track_color="@color/filterSelected"
+        app:ssb_show_sign="true"
+        app:ssb_show_thumb_text="false"
+        app:ssb_sign_arrow_height="5dp"
+        app:ssb_sign_arrow_width="10dp"
+        app:ssb_sign_color="@color/filterSelected"
         app:layout_constraintBottom_toTopOf="@id/guideline_2"
-        app:layout_constraintTop_toBottomOf="@id/apply_button_dialog" />
+        app:layout_constraintTop_toBottomOf="@id/apply_button_dialog"
+        />
 
     <TextView
         android:id="@+id/max_price_text"
@@ -79,36 +90,36 @@
             android:id="@+id/rooms_cant_1"
             android:layout_width="@dimen/room_button_filter"
             android:layout_height="@dimen/room_button_filter"
-            android:layout_marginLeft="@dimen/margin_rooms_filter"
+            android:layout_marginStart="@dimen/margin_rooms_filter"
             android:background="@drawable/room_button_filter_selector"
-            android:text="1"
+            android:text="@string/room_1"
             android:textColor="@drawable/room_button_color_filter_selector" />
 
         <Button
             android:id="@+id/rooms_cant_2"
             android:layout_width="@dimen/room_button_filter"
             android:layout_height="@dimen/room_button_filter"
-            android:layout_marginLeft="@dimen/margin_rooms_filter"
+            android:layout_marginStart="@dimen/margin_rooms_filter"
             android:background="@drawable/room_button_filter_selector"
-            android:text="2"
+            android:text="@string/room_2"
             android:textColor="@drawable/room_button_color_filter_selector" />
 
         <Button
             android:id="@+id/rooms_cant_3"
             android:layout_width="@dimen/room_button_filter"
             android:layout_height="@dimen/room_button_filter"
-            android:layout_marginLeft="@dimen/margin_rooms_filter"
+            android:layout_marginStart="@dimen/margin_rooms_filter"
             android:background="@drawable/room_button_filter_selector"
-            android:text="3"
+            android:text="@string/room_3"
             android:textColor="@drawable/room_button_color_filter_selector" />
 
         <Button
             android:id="@+id/rooms_cant_4"
             android:layout_width="@dimen/room_button_filter"
             android:layout_height="@dimen/room_button_filter"
-            android:layout_marginLeft="@dimen/margin_rooms_filter"
+            android:layout_marginStart="@dimen/margin_rooms_filter"
             android:background="@drawable/room_button_filter_selector"
-            android:text="4"
+            android:text="@string/room_4"
             android:textColor="@drawable/room_button_color_filter_selector" />
     </LinearLayout>
 

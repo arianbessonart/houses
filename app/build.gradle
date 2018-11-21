@@ -52,6 +52,6 @@ dependencies {
     // facebook
     implementation 'com.facebook.android:facebook-login:[4,5)'
 
-    // discrete-seekbar
-    implementation 'org.adw.library:discrete-seekbar:1.0.1'
+    // signseekbar
+    implementation 'com.zhouyou:signseekbar:1.0.6'
 }

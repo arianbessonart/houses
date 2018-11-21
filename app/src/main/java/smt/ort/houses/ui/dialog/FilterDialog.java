@@ -16,10 +16,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.zhouyou.view.seekbar.SignSeekBar;
+
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,8 +84,12 @@ public class FilterDialog extends DialogFragment {
         if (d != null) {
             TextView minTextView = d.findViewById(R.id.min_price_text);
             TextView maxTextView = d.findViewById(R.id.max_price_text);
-            minTextView.setText(HouseFilters.MIN_PRICE.toString());
-            maxTextView.setText(HouseFilters.MAX_PRICE.toString());
+            NumberFormat format = NumberFormat.getCurrencyInstance();
+            format.setMinimumFractionDigits(0);
+            String minPrice = format.format(HouseFilters.MIN_PRICE);
+            String maxPrice = format.format(HouseFilters.MAX_PRICE);
+            minTextView.setText(minPrice);
+            maxTextView.setText(maxPrice);
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             d.getWindow().setLayout(width, height);
@@ -99,45 +105,51 @@ public class FilterDialog extends DialogFragment {
                 listener.onDialogPositiveClick(filters);
             });
 
-            SeekBar priceItem = d.findViewById(R.id.price_item_dialog);
-            priceItem.setMin(HouseFilters.MIN_PRICE);
-            priceItem.setMax(HouseFilters.MAX_PRICE);
-            priceItem.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    filters.setPrice(String.valueOf(i));
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
-            });
-            priceItem.setProgress(Integer.parseInt(filters.getPrice()), true);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////
 
-//            DiscreteSeekBar discreteSeekBar = d.findViewById(R.id.price_item_dialog_seekbar);
-//            discreteSeekBar.setMin(HouseFilters.MIN_PRICE);
-//            discreteSeekBar.setMax(HouseFilters.MAX_PRICE);
-//            discreteSeekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+//            SeekBar priceItem = d.findViewById(R.id.price_item_dialog);
+//            priceItem.setMin(HouseFilters.MIN_PRICE);
+//            priceItem.setMax(HouseFilters.MAX_PRICE);
+//            priceItem.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 //                @Override
-//                public void onProgressChanged(DiscreteSeekBar seekBar, int i, boolean fromUser) {
+//                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 //                    filters.setPrice(String.valueOf(i));
 //                }
 //
 //                @Override
-//                public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+//                public void onStartTrackingTouch(SeekBar seekBar) {
 //                }
 //
 //                @Override
-//                public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+//                public void onStopTrackingTouch(SeekBar seekBar) {
 //                }
 //            });
-//            discreteSeekBar.setProgress(Integer.parseInt(filters.getPrice()));
+//            priceItem.setProgress(Integer.parseInt(filters.getPrice()), true);
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////
+
+            SignSeekBar seekBar = d.findViewById(R.id.price_item_dialog);
+            seekBar.getConfigBuilder().min(HouseFilters.MIN_PRICE).max(HouseFilters.MAX_PRICE).sectionCount(20).seekBySection().build();
+
+            seekBar.setOnProgressChangedListener(new SignSeekBar.OnProgressChangedListener() {
+                @Override
+                public void onProgressChanged(SignSeekBar signSeekBar, int progress, float progressFloat, boolean fromUser) {
+                    filters.setPrice(String.valueOf(progress));
+                }
+
+                @Override
+                public void getProgressOnActionUp(SignSeekBar signSeekBar, int progress, float progressFloat) {
+
+                }
+
+                @Override
+                public void getProgressOnFinally(SignSeekBar signSeekBar, int progress, float progressFloat, boolean fromUser) {
+
+                }
+            });
+
+            seekBar.setProgress(Integer.parseInt(filters.getPrice()));
 
             ////////////////////////////////////////////////////////////////////////////////////////////////
 
