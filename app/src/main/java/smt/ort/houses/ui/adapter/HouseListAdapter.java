@@ -12,27 +12,42 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.List;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
+import smt.ort.houses.model.ListLayoutView;
 
 public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.HouseViewHolder> {
 
     private final LayoutInflater mInflater;
     OnHouseListListener listener;
+    ListLayoutView layoutView;
     private List<House> houses;
 
-    public HouseListAdapter(Context context, OnHouseListListener listener) {
+    public HouseListAdapter(Context context, OnHouseListListener listener, ListLayoutView layoutView) {
         mInflater = LayoutInflater.from(context);
         this.listener = listener;
+        this.layoutView = layoutView;
     }
 
     @NonNull
     @Override
     public HouseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.house_list_item, parent, false);
+        View itemView;
+        switch (layoutView) {
+            case GRID:
+                itemView = mInflater.inflate(R.layout.house_list_grid_item, parent, false);
+                break;
+            case LIST:
+                itemView = mInflater.inflate(R.layout.house_list_item, parent, false);
+                break;
+            case LIST_ITEM:
+                itemView = mInflater.inflate(R.layout.house_list_item_left, parent, false);
+                break;
+            default:
+                itemView = mInflater.inflate(R.layout.house_list_item, parent, false);
+        }
         return new HouseViewHolder(itemView);
     }
 
@@ -71,6 +86,10 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
             return houses.size();
         }
         return 0;
+    }
+
+    public void setLayout(ListLayoutView layoutView) {
+        this.layoutView = layoutView;
     }
 
 

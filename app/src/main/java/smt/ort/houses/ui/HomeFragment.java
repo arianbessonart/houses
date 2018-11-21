@@ -26,6 +26,7 @@ import java.util.List;
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.HouseFilters;
+import smt.ort.houses.model.ListLayoutView;
 import smt.ort.houses.ui.adapter.HouseListAdapter;
 import smt.ort.houses.ui.adapter.OnHouseListListener;
 import smt.ort.houses.ui.dialog.FilterDialog;
@@ -33,15 +34,15 @@ import smt.ort.houses.ui.dialog.FilterDialog;
 
 public class HomeFragment extends Fragment implements OnHouseListListener, FilterDialog.NoticeDialogListener {
 
+    ProgressBar progressBar;
+    TextView errorTextView;
     private RecyclerView recyclerView;
     private HouseViewModel houseViewModel;
     private OnHouseSelectedListener listener;
     private SearchView searchView;
     private HouseFilters houseFilters;
     private HouseListAdapter adapter;
-    private LayoutManagerType currentLayoutManager = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-    ProgressBar progressBar;
-    TextView errorTextView;
+    private ListLayoutView listLayoutView = ListLayoutView.LIST;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -77,7 +78,7 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
 
         FragmentActivity activity = getActivity();
         recyclerView = view.findViewById(R.id.recyclerView);
-        adapter = new HouseListAdapter(activity, this);
+        adapter = new HouseListAdapter(activity, this, listLayoutView);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
@@ -169,8 +170,29 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
             case R.id.search_action_item:
                 return true;
             case R.id.view_action_item:
-                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GridLayoutManager.DEFAULT_SPAN_COUNT));
-                recyclerView.setAdapter(adapter);
+                switch (listLayoutView) {
+                    case LIST:
+                        adapter.setLayout(ListLayoutView.GRID);
+                        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                        recyclerView.setAdapter(adapter);
+                        listLayoutView = ListLayoutView.GRID;
+                        item.setIcon(R.drawable.baseline_view_module_24);
+                        break;
+                    case GRID:
+                        adapter.setLayout(ListLayoutView.LIST_ITEM);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        recyclerView.setAdapter(adapter);
+                        listLayoutView = ListLayoutView.LIST_ITEM;
+                        item.setIcon(R.drawable.baseline_view_list_24);
+                        break;
+                    case LIST_ITEM:
+                        adapter.setLayout(ListLayoutView.LIST);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        recyclerView.setAdapter(adapter);
+                        listLayoutView = ListLayoutView.LIST;
+                        item.setIcon(R.drawable.baseline_view_headline_24);
+                        break;
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -193,11 +215,6 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
 
     public interface OnHouseSelectedListener {
         void onHouseSelected(House house);
-    }
-
-    public enum LayoutManagerType {
-        GRID_LAYOUT_MANAGER,
-        LINEAR_LAYOUT_MANAGER
     }
 
 }

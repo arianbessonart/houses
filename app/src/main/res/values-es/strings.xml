@@ -25,4 +25,6 @@
     <string name="room_2">2</string>
     <string name="room_3">3</string>
     <string name="room_4">4</string>
+
+    <string name="view">Vista</string>
 </resources>
