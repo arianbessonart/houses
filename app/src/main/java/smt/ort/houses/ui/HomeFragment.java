@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -37,6 +38,8 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
     private OnHouseSelectedListener listener;
     private SearchView searchView;
     private HouseFilters houseFilters;
+    private HouseListAdapter adapter;
+    private LayoutManagerType currentLayoutManager = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
     ProgressBar progressBar;
     TextView errorTextView;
 
@@ -74,7 +77,7 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
 
         FragmentActivity activity = getActivity();
         recyclerView = view.findViewById(R.id.recyclerView);
-        final HouseListAdapter adapter = new HouseListAdapter(activity, this);
+        adapter = new HouseListAdapter(activity, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
@@ -165,6 +168,9 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
                 return true;
             case R.id.search_action_item:
                 return true;
+            case R.id.view_action_item:
+                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GridLayoutManager.DEFAULT_SPAN_COUNT));
+                recyclerView.setAdapter(adapter);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -187,6 +193,11 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
 
     public interface OnHouseSelectedListener {
         void onHouseSelected(House house);
+    }
+
+    public enum LayoutManagerType {
+        GRID_LAYOUT_MANAGER,
+        LINEAR_LAYOUT_MANAGER
     }
 
 }

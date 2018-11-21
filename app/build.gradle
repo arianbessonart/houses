@@ -51,4 +51,7 @@ dependencies {
 
     // facebook
     implementation 'com.facebook.android:facebook-login:[4,5)'
+
+    // bubbleseekbar
+    implementation 'com.xw.repo:bubbleseekbar:3.16-lite'
 }
