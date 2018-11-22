@@ -11,12 +11,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.Favorite;
 import smt.ort.houses.model.House;
+import smt.ort.houses.util.StringUtil;
 
 public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapter.HouseViewHolder> {
 
@@ -41,16 +41,7 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
         House hCurrent = houses.get(position);
         holder.titleView.setText(hCurrent.getTitle());
 
-        // Set price
-        String formattedPrice = hCurrent.getPrice();
-        try {
-            Float floatPrice = Float.parseFloat(hCurrent.getPrice());
-            NumberFormat format = NumberFormat.getCurrencyInstance();
-            formattedPrice = format.format(floatPrice);
-        } catch (NumberFormatException e) {
-            // swallow catch
-        }
-        holder.priceTextView.setText(formattedPrice);
+        holder.priceTextView.setText(StringUtil.formatCurrency(hCurrent.getPrice()));
 
         // Set photo
         if (hCurrent.getPhotos().size() > 0) {

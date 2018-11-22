@@ -1,12 +1,10 @@
 package smt.ort.houses.ui.housedetail;
 
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,18 +13,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
-import smt.ort.houses.network.Resource;
 import smt.ort.houses.ui.adapter.HousePhotosAdapter;
-import smt.ort.houses.ui.dialog.FilterDialog;
+import smt.ort.houses.util.StringUtil;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HouseDetailFragment extends Fragment {
 
+    private final String DIVIDER = " | ";
     private House house;
     private HouseDetailViewModel viewModel;
     private Menu menu;
@@ -56,23 +56,55 @@ public class HouseDetailFragment extends Fragment {
 
         viewModel = ViewModelProviders.of(this, factory).get(HouseDetailViewModel.class);
 
-        viewModel.getHouse().observe(this, new Observer<Resource<House>>() {
-            @Override
-            public void onChanged(@Nullable Resource<House> resourceHouse) {
-                if (resourceHouse.getData() != null) {
-                    itemLoaded = true;
-                    getActivity().invalidateOptionsMenu();
-                    House newHouse = resourceHouse.getData();
-                    if (newHouse.getPhotos().size() > 0) {
-                        viewPager.setAdapter(new HousePhotosAdapter(getActivity(), newHouse.getPhotos()));
-                    }
-                    house = resourceHouse.getData();
+        TextView subtitleTextView = view.findViewById(R.id.subtitle);
+        TextView titleTextView = view.findViewById(R.id.title);
+        TextView priceTextView = view.findViewById(R.id.price);
+        ImageView favoriteBtn = view.findViewById(R.id.favorite_button);
+        ImageView shareBtn = view.findViewById(R.id.share_button);
+
+        viewModel.getHouse().observe(this, resourceHouse -> {
+            if (resourceHouse.getData() != null) {
+                itemLoaded = true;
+                getActivity().invalidateOptionsMenu();
+                House newHouse = resourceHouse.getData();
+                if (newHouse.getPhotos().size() > 0) {
+                    viewPager.setAdapter(new HousePhotosAdapter(getActivity(), newHouse.getPhotos()));
+                }
+                house = resourceHouse.getData();
+                subtitleTextView.setText(buildSubtitle(house));
+                titleTextView.setText(house.getTitle());
+                priceTextView.setText(StringUtil.formatCurrency(house.getPrice()));
+
+                if (house.getFavorite()) {
+                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24);
+                } else {
+                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_border_24);
                 }
             }
         });
 
-        // Inflate the layout for this fragment
+        favoriteBtn.setOnClickListener(viewBtn -> {
+            house.setFavorite(!house.getFavorite());
+            viewModel.toggleFavorite(house);
+        });
+
+        shareBtn.setOnClickListener(viewBtn -> {
+            initShareAction();
+        });
+
         return view;
+    }
+
+    private String buildSubtitle(House house) {
+        return StringUtil.formatSquareMeters(house.getSquareMeters()) + " " + getResources().getString(R.string.total) + DIVIDER + house.getRooms() + " " + getResources().getString(R.string.rooms);
+    }
+
+    private void initShareAction() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, house.getTitle());
+        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "http://www.houses.com/houses/" + house.getId());
+        startActivity(Intent.createChooser(shareIntent, "Share link!"));
     }
 
     @Override
@@ -104,6 +136,9 @@ public class HouseDetailFragment extends Fragment {
             case R.id.favorite_action_item:
                 house.setFavorite(!house.getFavorite());
                 viewModel.toggleFavorite(house);
+                return true;
+            case R.id.share_action_item:
+                initShareAction();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
     private HashMap<ListLayoutView, ListLayoutView> viewStates = new HashMap<ListLayoutView, ListLayoutView>() {{
         put(ListLayoutView.LIST, ListLayoutView.GRID);
         put(ListLayoutView.GRID, ListLayoutView.LIST_ITEM);
-        put(ListLayoutView.LIST_ITEM, ListLayoutView.GRID);
+        put(ListLayoutView.LIST_ITEM, ListLayoutView.LIST);
     }};
 
     public HomeFragment() {

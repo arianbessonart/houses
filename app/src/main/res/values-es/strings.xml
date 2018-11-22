@@ -5,6 +5,7 @@
     <string name="login">Ingresar</string>
     <string name="logout">Salir</string>
     <string name="search">Buscar</string>
+    <string name="share">Compartir</string>
     <string name="filter">Filtrar</string>
     <string name="home">Inicio</string>
     <string name="apply">Aplicar</string>
@@ -27,4 +28,13 @@
     <string name="room_4">4</string>
 
     <string name="view">Vista</string>
+
+    <string name="total">totales</string>
+    <string name="rooms">habitaciones</string>
+    <string name="contact">Contactar</string>
+    <string name="call">Llamar</string>
+
+    <string name="add_to_favorite">Agregar a Favoritos</string>
+    <string name="favorite_desc">Agregar a Favoritos</string>
+    <string name="share_desc">Compartir Casa</string>
 </resources>

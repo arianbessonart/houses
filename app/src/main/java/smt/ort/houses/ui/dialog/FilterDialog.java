@@ -21,12 +21,12 @@ import android.widget.TextView;
 
 import com.zhouyou.view.seekbar.SignSeekBar;
 
-import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.HouseFilters;
+import smt.ort.houses.util.StringUtil;
 
 
 public class FilterDialog extends DialogFragment {
@@ -84,12 +84,9 @@ public class FilterDialog extends DialogFragment {
         if (d != null) {
             TextView minTextView = d.findViewById(R.id.min_price_text);
             TextView maxTextView = d.findViewById(R.id.max_price_text);
-            NumberFormat format = NumberFormat.getCurrencyInstance();
-            format.setMinimumFractionDigits(0);
-            String minPrice = format.format(HouseFilters.MIN_PRICE);
-            String maxPrice = format.format(HouseFilters.MAX_PRICE);
-            minTextView.setText(minPrice);
-            maxTextView.setText(maxPrice);
+
+            minTextView.setText(StringUtil.formatCurrency(String.valueOf(HouseFilters.MIN_PRICE)));
+            maxTextView.setText(StringUtil.formatCurrency(String.valueOf(HouseFilters.MAX_PRICE)));
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             d.getWindow().setLayout(width, height);

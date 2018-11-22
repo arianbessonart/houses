@@ -23,4 +23,29 @@
         <item name="android:textColor">@color/textColorPrimary</item>
     </style>
 
+    <style name="houseSubtitle">
+        <item name="android:textSize">@dimen/subtitle_text_size</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="houseTitle">
+        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="houseTitleDetail">
+        <item name="android:textSize">@dimen/title_text_size_big</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="housePrice">
+        <item name="android:textSize">@dimen/price_text_size</item>
+        <item name="android:textColor">@color/color_black</item>
+    </style>
+
+    <style name="housePriceDetail">
+        <item name="android:textSize">@dimen/price_text_size_big</item>
+        <item name="android:textColor">@color/color_black</item>
+    </style>
+
 </resources>

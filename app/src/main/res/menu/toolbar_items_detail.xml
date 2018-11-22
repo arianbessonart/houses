@@ -10,5 +10,11 @@
             app:showAsAction="always"
             android:title="@string/favorite"
             />
+        <item
+            android:id="@+id/share_action_item"
+            android:icon="@drawable/baseline_share_24"
+            app:showAsAction="always"
+            android:title="@string/share"
+            />
     </group>
 </menu>

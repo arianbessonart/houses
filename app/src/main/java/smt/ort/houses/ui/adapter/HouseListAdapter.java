@@ -11,12 +11,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.ListLayoutView;
+import smt.ort.houses.util.StringUtil;
 
 public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.HouseViewHolder> {
 
@@ -55,17 +55,8 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
     public void onBindViewHolder(@NonNull HouseViewHolder holder, int position) {
         House hCurrent = houses.get(position);
         holder.titleView.setText(hCurrent.getTitle());
-
-        // Set price
-        String formattedPrice = hCurrent.getPrice();
-        try {
-            Float floatPrice = Float.parseFloat(hCurrent.getPrice());
-            NumberFormat format = NumberFormat.getCurrencyInstance();
-            formattedPrice = format.format(floatPrice);
-        } catch (NumberFormatException e) {
-            // swallow catch
-        }
-        holder.priceTextView.setText(formattedPrice);
+        holder.priceTextView.setText(StringUtil.formatCurrency(hCurrent.getPrice()));
+        holder.squareMeters.setText(StringUtil.formatSquareMeters(hCurrent.getSquareMeters()));
 
         // Set photo
         if (hCurrent.getPhotos().size() > 0) {
@@ -97,12 +88,14 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
         private TextView titleView;
         private TextView priceTextView;
         private ImageView imageView;
+        private TextView squareMeters;
 
         HouseViewHolder(@NonNull View itemView) {
             super(itemView);
             this.titleView = itemView.findViewById(R.id.houseTitleTextView);
             this.imageView = itemView.findViewById(R.id.imageCardView);
             this.priceTextView = itemView.findViewById(R.id.housePriceTextView);
+            this.squareMeters = itemView.findViewById(R.id.houseSquareMetersTextView);
             itemView.setOnClickListener(view -> listener.onHouseSelected(houses.get(getAdapterPosition())));
         }
     }
