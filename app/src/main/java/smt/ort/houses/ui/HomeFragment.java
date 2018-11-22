@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -20,11 +22,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.HouseFilters;
+import smt.ort.houses.model.ListLayoutView;
 import smt.ort.houses.ui.adapter.HouseListAdapter;
 import smt.ort.houses.ui.adapter.OnHouseListListener;
 import smt.ort.houses.ui.dialog.FilterDialog;
@@ -32,13 +36,20 @@ import smt.ort.houses.ui.dialog.FilterDialog;
 
 public class HomeFragment extends Fragment implements OnHouseListListener, FilterDialog.NoticeDialogListener {
 
+    ProgressBar progressBar;
+    TextView errorTextView;
     private RecyclerView recyclerView;
     private HouseViewModel houseViewModel;
     private OnHouseSelectedListener listener;
     private SearchView searchView;
     private HouseFilters houseFilters;
-    ProgressBar progressBar;
-    TextView errorTextView;
+    private HouseListAdapter adapter;
+    private ListLayoutView listLayoutView = ListLayoutView.LIST;
+    private HashMap<ListLayoutView, ListLayoutView> viewStates = new HashMap<ListLayoutView, ListLayoutView>() {{
+        put(ListLayoutView.LIST, ListLayoutView.GRID);
+        put(ListLayoutView.GRID, ListLayoutView.LIST_ITEM);
+        put(ListLayoutView.LIST_ITEM, ListLayoutView.GRID);
+    }};
 
     public HomeFragment() {
         // Required empty public constructor
@@ -74,7 +85,7 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
 
         FragmentActivity activity = getActivity();
         recyclerView = view.findViewById(R.id.recyclerView);
-        final HouseListAdapter adapter = new HouseListAdapter(activity, this);
+        adapter = new HouseListAdapter(activity, this, listLayoutView);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
@@ -149,6 +160,9 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
             }
         });
 
+        MenuItem itemView = menu.findItem(R.id.view_action_item);
+        itemView.setIcon(R.drawable.baseline_view_module_24);
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -158,13 +172,39 @@ public class HomeFragment extends Fragment implements OnHouseListListener, Filte
             case R.id.filter_action_item:
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
-
-                FilterDialog filterDialog = new FilterDialog();
+                FilterDialog filterDialog = FilterDialog.newInstance(houseFilters);
                 filterDialog.show(ft, "dialog");
                 filterDialog.setTargetFragment(HomeFragment.this, 1);
                 return true;
             case R.id.search_action_item:
                 return true;
+            case R.id.view_action_item:
+                ListLayoutView nextLayoutView = viewStates.get(listLayoutView);
+                switch (nextLayoutView) {
+                    case LIST:
+                        adapter.setLayout(ListLayoutView.LIST);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        recyclerView.removeItemDecorationAt(0);
+                        recyclerView.setAdapter(adapter);
+                        listLayoutView = ListLayoutView.LIST;
+                        item.setIcon(R.drawable.baseline_view_module_24);
+                        break;
+                    case GRID:
+                        adapter.setLayout(ListLayoutView.GRID);
+                        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                        recyclerView.setAdapter(adapter);
+                        listLayoutView = ListLayoutView.GRID;
+                        item.setIcon(R.drawable.baseline_view_list_24);
+                        break;
+                    case LIST_ITEM:
+                        adapter.setLayout(ListLayoutView.LIST_ITEM);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+                        recyclerView.setAdapter(adapter);
+                        listLayoutView = ListLayoutView.LIST_ITEM;
+                        item.setIcon(R.drawable.baseline_view_headline_24);
+                        break;
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }

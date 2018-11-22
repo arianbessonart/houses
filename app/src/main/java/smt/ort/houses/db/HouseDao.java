@@ -10,6 +10,7 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import smt.ort.houses.model.Favorite;
 import smt.ort.houses.model.House;
 
 @Dao
@@ -27,6 +28,9 @@ public interface HouseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertHouses(List<House> item);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertFavorites(List<Favorite> item);
+
     @Query("SELECT * FROM houses WHERE id = :id ORDER BY title")
     LiveData<House> getHouse(String id);
 
@@ -35,4 +39,7 @@ public interface HouseDao {
 
     @Query("SELECT * FROM houses h WHERE h.rooms = coalesce(:rooms, h.rooms) AND h.title LIKE coalesce(:title, h.title) LIMIT :maxResults")
     LiveData<List<House>> getHousesByFilters(String title, Integer rooms, Integer maxResults);
+
+    @Query("SELECT * FROM favorites ORDER BY title")
+    LiveData<List<Favorite>> getFavorites();
 }

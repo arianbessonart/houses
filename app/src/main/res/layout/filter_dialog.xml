@@ -1,131 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/clear_filter_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/margin_left_house_card"
+        android:src="@drawable/baseline_clear_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/apply_button_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="end"
+        android:layout_margin="@dimen/margin_left_house_card"
+        android:text="@string/apply"
+        android:textSize="@dimen/filter_apply_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/min_price_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/price_item_dialog" />
+
+    <com.zhouyou.view.seekbar.SignSeekBar
+        android:id="@+id/price_item_dialog"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="16dp"
+        app:ssb_section_text_position="bottom_sides"
+        app:ssb_show_progress_in_float="false"
+        app:ssb_show_section_mark="true"
+        app:ssb_show_section_text="true"
+        app:ssb_second_track_color="@color/filterSelected"
+        app:ssb_show_sign="true"
+        app:ssb_show_thumb_text="false"
+        app:ssb_sign_arrow_height="5dp"
+        app:ssb_sign_arrow_width="10dp"
+        app:ssb_sign_color="@color/filterSelected"
+        app:layout_constraintBottom_toTopOf="@id/guideline_2"
+        app:layout_constraintTop_toBottomOf="@id/apply_button_dialog"
+        />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/max_price_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/price_item_dialog" />
 
-            <ImageView
-                android:id="@+id/clear_filter_dialog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/margin_filter_actions"
-                android:src="@drawable/baseline_clear_24" />
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.33" />
 
-            <TextView
-                android:id="@+id/apply_button_dialog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="end"
-                android:layout_margin="@dimen/margin_left_house_card"
-                android:text="@string/apply"
-                android:textSize="@dimen/filter_apply_size" />
-        </RelativeLayout>
+    <View
+        android:id="@+id/line_rooms"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLineFilter"
+        app:layout_constraintTop_toBottomOf="@id/guideline_2" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/rooms_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/guideline_1"
+        app:layout_constraintTop_toBottomOf="@id/guideline_2">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+        <Button
+            android:id="@+id/rooms_cant_1"
+            android:layout_width="@dimen/room_button_filter"
+            android:layout_height="@dimen/room_button_filter"
+            android:layout_marginStart="@dimen/margin_rooms_filter"
+            android:background="@drawable/room_button_filter_selector"
+            android:text="@string/room_1"
+            android:textColor="@drawable/room_button_color_filter_selector" />
 
-                <TextView
-                    android:id="@+id/min_price_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true" />
+        <Button
+            android:id="@+id/rooms_cant_2"
+            android:layout_width="@dimen/room_button_filter"
+            android:layout_height="@dimen/room_button_filter"
+            android:layout_marginStart="@dimen/margin_rooms_filter"
+            android:background="@drawable/room_button_filter_selector"
+            android:text="@string/room_2"
+            android:textColor="@drawable/room_button_color_filter_selector" />
 
-                <SeekBar
-                    android:id="@+id/price_item_dialog"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/rooms_cant_3"
+            android:layout_width="@dimen/room_button_filter"
+            android:layout_height="@dimen/room_button_filter"
+            android:layout_marginStart="@dimen/margin_rooms_filter"
+            android:background="@drawable/room_button_filter_selector"
+            android:text="@string/room_3"
+            android:textColor="@drawable/room_button_color_filter_selector" />
 
-                <TextView
-                    android:id="@+id/max_price_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/rooms_cant_1"
-                    android:layout_width="@dimen/room_button_filter"
-                    android:layout_height="@dimen/room_button_filter"
-                    android:background="@drawable/room_button_filter_selector"
-                    android:text="1"
-                    android:layout_marginLeft="@dimen/margin_rooms_filter"
-                    android:textColor="@drawable/room_button_color_filter_selector" />
-
-                <Button
-                    android:id="@+id/rooms_cant_2"
-                    android:layout_width="@dimen/room_button_filter"
-                    android:layout_height="@dimen/room_button_filter"
-                    android:background="@drawable/room_button_filter_selector"
-                    android:text="2"
-                    android:layout_marginLeft="@dimen/margin_rooms_filter"
-                    android:textColor="@drawable/room_button_color_filter_selector" />
-
-                <Button
-                    android:id="@+id/rooms_cant_3"
-                    android:layout_width="@dimen/room_button_filter"
-                    android:layout_height="@dimen/room_button_filter"
-                    android:background="@drawable/room_button_filter_selector"
-                    android:text="3"
-                    android:layout_marginLeft="@dimen/margin_rooms_filter"
-                    android:textColor="@drawable/room_button_color_filter_selector" />
-
-                <Button
-                    android:id="@+id/rooms_cant_4"
-                    android:layout_width="@dimen/room_button_filter"
-                    android:layout_height="@dimen/room_button_filter"
-                    android:background="@drawable/room_button_filter_selector"
-                    android:text="4"
-                    android:layout_marginLeft="@dimen/margin_rooms_filter"
-                    android:textColor="@drawable/room_button_color_filter_selector" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <Switch
-                    android:id="@+id/filter_garage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/has_garage" />
-
-                <Switch
-                    android:id="@+id/filter_barbecue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/has_barbecue" />
-            </LinearLayout>
-
-
-        </LinearLayout>
-
+        <Button
+            android:id="@+id/rooms_cant_4"
+            android:layout_width="@dimen/room_button_filter"
+            android:layout_height="@dimen/room_button_filter"
+            android:layout_marginStart="@dimen/margin_rooms_filter"
+            android:background="@drawable/room_button_filter_selector"
+            android:text="@string/room_4"
+            android:textColor="@drawable/room_button_color_filter_selector" />
     </LinearLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.66" />
+
+    <View
+        android:id="@+id/line_options"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLineFilter"
+        app:layout_constraintTop_toBottomOf="@id/guideline_1" />
+
+    <Switch
+        android:id="@+id/filter_garage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/has_garage"
+        app:layout_constraintTop_toBottomOf="@id/line_options" />
+
+    <Switch
+        android:id="@+id/filter_barbecue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/has_barbecue"
+        app:layout_constraintTop_toBottomOf="@id/filter_garage" />
 
 </android.support.constraint.ConstraintLayout>

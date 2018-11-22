@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "smt.ort.houses"
-        minSdkVersion 23
+        minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -51,4 +51,7 @@ dependencies {
 
     // facebook
     implementation 'com.facebook.android:facebook-login:[4,5)'
+
+    // signseekbar
+    implementation 'com.zhouyou:signseekbar:1.0.6'
 }

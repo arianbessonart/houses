@@ -1,24 +1,31 @@
 package smt.ort.houses;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.facebook.FacebookException;
+import com.squareup.picasso.Picasso;
 
 import smt.ort.houses.model.House;
+import smt.ort.houses.model.User;
 import smt.ort.houses.ui.HelpFragment;
 import smt.ort.houses.ui.HomeFragment;
 import smt.ort.houses.ui.LoginFragment;
+import smt.ort.houses.ui.favorite.FavoritesFragment;
 import smt.ort.houses.ui.housedetail.HouseDetailFragment;
 import smt.ort.houses.ui.terms.TermsFragment;
 
@@ -44,6 +51,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, HomeFragment.newInstance()).commit();
+
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("login", Context.MODE_PRIVATE);
+        if (sharedPreferences.getString("userId", null) != null) {
+            navigationView.getMenu().findItem(R.id.login_item).setVisible(false);
+            navigationView.getMenu().findItem(R.id.logout_item).setVisible(true);
+            navigationView.getMenu().findItem(R.id.favorite_item).setVisible(true);
+        }
     }
 
     private void selectDrawerItem(MenuItem item) {
@@ -53,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         switch (item.getItemId()) {
             case R.id.home_item:
                 fragmentClass = HomeFragment.class;
+                break;
+            case R.id.favorite_item:
+                fragmentClass = FavoritesFragment.class;
                 break;
             case R.id.terms_item:
                 fragmentClass = TermsFragment.class;
@@ -76,12 +93,22 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
             e.printStackTrace();
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-
         item.setChecked(true);
-        setTitle(item.getTitle());
+        goToFragment(fragment, item.getTitle().toString(), null);
         drawer.closeDrawers();
+    }
+
+    private void goToFragment(Fragment fragment, String title, String addToBackStack) {
+        setTitle(title);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction().replace(R.id.flContent, fragment);
+        if (addToBackStack != null && !addToBackStack.isEmpty()) {
+            transaction.addToBackStack(addToBackStack);
+        } else {
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
     }
 
     private void setupDrawer(NavigationView navigationView) {
@@ -112,11 +139,22 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
     }
 
     @Override
-    public void onLoginSuccess() {
+    public void onLoginSuccess(User user) {
         navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().findItem(R.id.login_item).setVisible(false);
         navigationView.getMenu().findItem(R.id.logout_item).setVisible(true);
+        navigationView.getMenu().findItem(R.id.favorite_item).setVisible(true);
         invalidateOptionsMenu();
+        goToFragment(HomeFragment.newInstance(), getResources().getString(R.string.home), null);
+        getSupportFragmentManager().beginTransaction().replace(R.id.flContent, HomeFragment.newInstance()).addToBackStack(null).commit();
+        TextView textView = findViewById(R.id.nav_header_textView);
+        textView.setText(user.getName());
+        ImageView imageView = findViewById(R.id.nav_header_image);
+
+        String profileUrl = "https://graph.facebook.com/" + user.getId() + "/picture?type=large";
+        Picasso.get().load(profileUrl).placeholder(R.mipmap.ic_launcher).into(imageView);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("login", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("userId", user.getId()).apply();
     }
 
     @Override
@@ -125,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
     }
 
     @Override
-    public void onLoginError(FacebookException e) {
+    public void onLoginError(Exception e) {
 
     }
 
@@ -134,6 +172,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         navigationView = findViewById(R.id.nav_view);
         navigationView.getMenu().findItem(R.id.login_item).setVisible(true);
         navigationView.getMenu().findItem(R.id.logout_item).setVisible(false);
+        navigationView.getMenu().findItem(R.id.favorite_item).setVisible(false);
         invalidateOptionsMenu();
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("login", Context.MODE_PRIVATE);
+        sharedPreferences.edit().remove("userId").apply();
     }
 }

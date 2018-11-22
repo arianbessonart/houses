@@ -21,4 +21,11 @@
     <string name="has_barbecue">Has Barbecue</string>
     <string name="has_garage">Has Garage</string>
 
+    <string name="room_1">1</string>
+    <string name="room_2">2</string>
+    <string name="room_3">3</string>
+    <string name="room_4">4</string>
+
+    <string name="view">View</string>
+
 </resources>

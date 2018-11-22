@@ -8,6 +8,7 @@ import retrofit2.http.POST;
 import smt.ort.houses.model.FavoriteBodyRequest;
 import smt.ort.houses.model.FavoriteBodyResponse;
 import smt.ort.houses.model.HouseFilters;
+import smt.ort.houses.model.ResponseFavorites;
 import smt.ort.houses.model.ResponseHouses;
 
 public interface HousesService {
@@ -19,6 +20,6 @@ public interface HousesService {
     Call<ApiResponse<FavoriteBodyResponse>> addFavorite(@Body FavoriteBodyRequest body);
 
     @POST("listadoFavoritos/")
-    LiveData<ApiResponse<ResponseHouses>> getFavorites();
+    LiveData<ApiResponse<ResponseFavorites>> getFavorites();
 
 }

@@ -16,10 +16,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.zhouyou.view.seekbar.SignSeekBar;
+
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +32,18 @@ import smt.ort.houses.model.HouseFilters;
 public class FilterDialog extends DialogFragment {
 
     private NoticeDialogListener listener;
-    private HouseFilters houseFilters = new HouseFilters();
+    private HouseFilters filters;
     private Map<Integer, Button> buttons;
+
+
+    public static FilterDialog newInstance(HouseFilters houseFilters) {
+
+        Bundle args = new Bundle();
+        args.putParcelable("filters", houseFilters);
+        FilterDialog fragment = new FilterDialog();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -56,6 +68,12 @@ public class FilterDialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_theme);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            filters = bundle.getParcelable("filters");
+        }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -66,8 +84,12 @@ public class FilterDialog extends DialogFragment {
         if (d != null) {
             TextView minTextView = d.findViewById(R.id.min_price_text);
             TextView maxTextView = d.findViewById(R.id.max_price_text);
-            minTextView.setText(HouseFilters.MIN_PRICE);
-            maxTextView.setText(HouseFilters.MAX_PRICE);
+            NumberFormat format = NumberFormat.getCurrencyInstance();
+            format.setMinimumFractionDigits(0);
+            String minPrice = format.format(HouseFilters.MIN_PRICE);
+            String maxPrice = format.format(HouseFilters.MAX_PRICE);
+            minTextView.setText(minPrice);
+            maxTextView.setText(maxPrice);
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             d.getWindow().setLayout(width, height);
@@ -80,35 +102,41 @@ public class FilterDialog extends DialogFragment {
             TextView textView = d.findViewById(R.id.apply_button_dialog);
             textView.setOnClickListener(view -> {
                 dismiss();
-                listener.onDialogPositiveClick(houseFilters);
+                listener.onDialogPositiveClick(filters);
             });
 
-            SeekBar priceItem = d.findViewById(R.id.price_item_dialog);
-            priceItem.setMin(HouseFilters.MIN_PRICE);
-            priceItem.setMax(HouseFilters.MAX_PRICE);
-            priceItem.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            SignSeekBar seekBar = d.findViewById(R.id.price_item_dialog);
+            seekBar.getConfigBuilder().min(HouseFilters.MIN_PRICE).max(HouseFilters.MAX_PRICE).sectionCount(20).seekBySection().build();
+
+            seekBar.setOnProgressChangedListener(new SignSeekBar.OnProgressChangedListener() {
                 @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    houseFilters.setPrice(String.valueOf(i));
+                public void onProgressChanged(SignSeekBar signSeekBar, int progress, float progressFloat, boolean fromUser) {
+                    filters.setPrice(String.valueOf(progress));
                 }
 
                 @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
+                public void getProgressOnActionUp(SignSeekBar signSeekBar, int progress, float progressFloat) {
 
                 }
 
                 @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
+                public void getProgressOnFinally(SignSeekBar signSeekBar, int progress, float progressFloat, boolean fromUser) {
 
                 }
             });
+
+            seekBar.setProgress(Integer.parseInt(filters.getPrice()));
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////
 
             Switch filterGarage = d.findViewById(R.id.filter_garage);
             Switch filterBarbecue = d.findViewById(R.id.filter_barbecue);
 
-            filterGarage.setOnCheckedChangeListener((compoundButton, b) -> houseFilters.setHasGarage(b ? true : null));
+            filterGarage.setOnCheckedChangeListener((compoundButton, b) -> filters.setHasGarage(b ? true : null));
+            filterGarage.setChecked(filters.getHasGarage() != null && filters.getHasGarage());
 
-            filterBarbecue.setOnCheckedChangeListener((compoundButton, b) -> houseFilters.setHasBarbecue(b ? true : null));
+            filterBarbecue.setOnCheckedChangeListener((compoundButton, b) -> filters.setHasBarbecue(b ? true : null));
+            filterBarbecue.setChecked(filters.getHasBarbecue() != null && filters.getHasBarbecue());
 
             buttons = new HashMap<Integer, Button>() {{
                 put(1, d.findViewById(R.id.rooms_cant_1));
@@ -116,6 +144,10 @@ public class FilterDialog extends DialogFragment {
                 put(3, d.findViewById(R.id.rooms_cant_3));
                 put(4, d.findViewById(R.id.rooms_cant_4));
             }};
+
+            if (filters.getRooms() != null) {
+                buttons.get(filters.getRooms()).setSelected(true);
+            }
 
             for (int i = 1; i <= 4; i++) {
                 Button btn = buttons.get(i);
@@ -126,17 +158,17 @@ public class FilterDialog extends DialogFragment {
     }
 
     private void changeButtonState(Button btn, int quantity) {
-        if (houseFilters.getRooms() == null) {
+        if (filters.getRooms() == null) {
             btn.setSelected(true);
-            houseFilters.setRooms(quantity);
-        } else if (houseFilters.getRooms() == quantity) {
+            filters.setRooms(quantity);
+        } else if (filters.getRooms() == quantity) {
             btn.setSelected(false);
-            houseFilters.setRooms(null);
+            filters.setRooms(null);
         } else {
-            Button btnSelected = buttons.get(houseFilters.getRooms());
+            Button btnSelected = buttons.get(filters.getRooms());
             btnSelected.setSelected(false);
             btn.setSelected(true);
-            houseFilters.setRooms(quantity);
+            filters.setRooms(quantity);
         }
     }
 

@@ -20,4 +20,11 @@
     <string name="error_no_results">No se encontraron casas 😔</string>
     <string name="has_barbecue">Con Parrillero</string>
     <string name="has_garage">Has Garaje</string>
+
+    <string name="room_1">1</string>
+    <string name="room_2">2</string>
+    <string name="room_3">3</string>
+    <string name="room_4">4</string>
+
+    <string name="view">Vista</string>
 </resources>

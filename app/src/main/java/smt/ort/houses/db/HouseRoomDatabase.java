@@ -8,12 +8,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import smt.ort.houses.model.Favorite;
 import smt.ort.houses.model.House;
 
 
 @Database(entities = {
-        House.class
-}, version = 6)
+        House.class, Favorite.class
+}, version = 7)
 public abstract class HouseRoomDatabase extends RoomDatabase {
 
     private static volatile HouseRoomDatabase instance;
