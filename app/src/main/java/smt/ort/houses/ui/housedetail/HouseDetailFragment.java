@@ -3,6 +3,7 @@ package smt.ort.houses.ui.housedetail;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -62,6 +63,8 @@ public class HouseDetailFragment extends Fragment {
         ImageView favoriteBtn = view.findViewById(R.id.favorite_button);
         ImageView shareBtn = view.findViewById(R.id.share_button);
 
+        ImageView callBtn = view.findViewById(R.id.call_button);
+
         viewModel.getHouse().observe(this, resourceHouse -> {
             if (resourceHouse.getData() != null) {
                 itemLoaded = true;
@@ -90,6 +93,12 @@ public class HouseDetailFragment extends Fragment {
 
         shareBtn.setOnClickListener(viewBtn -> {
             initShareAction();
+        });
+
+        callBtn.setOnClickListener(viewBtn -> {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + "+59899000000"));
+            startActivity(intent);
         });
 
         return view;
