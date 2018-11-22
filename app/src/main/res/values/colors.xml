@@ -5,11 +5,13 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="textColorPrimary">#3b3b3b</color>
+    <color name="textColorSecondary">#000000</color>
     <color name="transparent">#00ffffff</color>
     <color name="filterSelected">#00574B</color>
     <color name="iconsColors">#202020</color>
     <color name="color_gray">#C6B4B4</color>
     <color name="color_red">#FF0000</color>
+    <color name="color_black">#000000</color>
     <color name="color_green">#00FF00</color>
     <color name="color_blue">#007dff</color>
     <color name="color_yellow">#FFFF00</color>

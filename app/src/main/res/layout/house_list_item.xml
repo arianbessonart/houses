@@ -23,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/margin_left_house_card"
-            android:textSize="18sp"
-            />
+            android:textColor="@color/color_black"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/houseTitleTextView"
