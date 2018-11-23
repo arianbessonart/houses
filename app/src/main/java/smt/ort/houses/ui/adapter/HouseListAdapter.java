@@ -21,11 +21,11 @@ import smt.ort.houses.util.StringUtil;
 public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.HouseViewHolder> {
 
     private final LayoutInflater mInflater;
-    OnHouseListListener listener;
+    OnClickItemListener listener;
     ListLayoutView layoutView;
     private List<House> houses;
 
-    public HouseListAdapter(Context context, OnHouseListListener listener, ListLayoutView layoutView) {
+    public HouseListAdapter(Context context, OnClickItemListener listener, ListLayoutView layoutView) {
         mInflater = LayoutInflater.from(context);
         this.listener = listener;
         this.layoutView = layoutView;
@@ -96,7 +96,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
             this.imageView = itemView.findViewById(R.id.imageCardView);
             this.priceTextView = itemView.findViewById(R.id.housePriceTextView);
             this.squareMeters = itemView.findViewById(R.id.houseSquareMetersTextView);
-            itemView.setOnClickListener(view -> listener.onHouseSelected(houses.get(getAdapterPosition())));
+            itemView.setOnClickListener(view -> listener.onClick(houses.get(getAdapterPosition())));
         }
     }
 

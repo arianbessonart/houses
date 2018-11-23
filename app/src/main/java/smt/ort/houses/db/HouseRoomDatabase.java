@@ -52,10 +52,6 @@ public abstract class HouseRoomDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params) {
             mDao.deleteAllHouses();
-//            House house = new House(1L, "Casa 1");
-//            mDao.insert(house);
-//            house = new House(2L, "Casa 2");
-//            mDao.insert(house);
             return null;
         }
     }
