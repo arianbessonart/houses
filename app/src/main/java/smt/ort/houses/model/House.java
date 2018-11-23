@@ -13,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(tableName = "houses", primaryKeys = {"id", "isOrganic"})
+@Entity(tableName = "houses", primaryKeys = {"id"})
 public class House implements Parcelable {
 
     @SuppressWarnings("unused")
@@ -66,9 +66,6 @@ public class House implements Parcelable {
     @ColumnInfo(name = "favorite")
     @SerializedName("Favorito")
     private Boolean favorite;
-    @NonNull
-    @ColumnInfo(name = "isOrganic")
-    private Boolean isOrganic;
 
     public House() {
     }
@@ -96,8 +93,6 @@ public class House implements Parcelable {
         }
         byte favoriteVal = in.readByte();
         favorite = favoriteVal == 0x02 ? null : favoriteVal != 0x00;
-        byte isOrganicVal = in.readByte();
-        isOrganic = isOrganicVal == 0x02 ? null : isOrganicVal != 0x00;
     }
 
     public String getId() {
@@ -196,14 +191,6 @@ public class House implements Parcelable {
         this.favorite = favorite;
     }
 
-    public Boolean getOrganic() {
-        return isOrganic;
-    }
-
-    public void setOrganic(Boolean organic) {
-        isOrganic = organic;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -252,11 +239,6 @@ public class House implements Parcelable {
             dest.writeByte((byte) (0x02));
         } else {
             dest.writeByte((byte) (favorite ? 0x01 : 0x00));
-        }
-        if (isOrganic == null) {
-            dest.writeByte((byte) (0x02));
-        } else {
-            dest.writeByte((byte) (isOrganic ? 0x01 : 0x00));
         }
     }
 }

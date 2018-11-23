@@ -52,9 +52,6 @@ public class HouseRepository {
             @Override
             protected void saveCallResult(@NonNull ResponseHouses item) {
                 if (item.getList() != null && item.getList().size() > 0) {
-                    for (House h : item.getList()) {
-                        h.setOrganic(true);
-                    }
                     dao.insertHouses(item.getList());
                 }
             }
@@ -109,10 +106,7 @@ public class HouseRepository {
             @Override
             protected void saveCallResult(@NonNull ResponseHouses item) {
                 if (item.getList() != null && item.getList().size() > 0) {
-                    for (House h : item.getList()) {
-                        h.setOrganic(false);
-                    }
-                    dao.insertFavorites(item.getList());
+                    dao.insertHouses(item.getList());
                 }
             }
 

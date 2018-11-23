@@ -22,12 +22,6 @@ public interface HouseDao {
     @Query("DELETE FROM houses")
     void deleteAllHouses();
 
-    @Query("DELETE FROM houses WHERE isOrganic = 1")
-    void deleteHouses();
-
-    @Query("DELETE FROM houses WHERE isOrganic = 0")
-    void deleteFavorites();
-
     @Delete
     void deleteFavorite(House house);
 
@@ -46,9 +40,9 @@ public interface HouseDao {
     @Update
     void update(House house);
 
-    @Query("SELECT * FROM houses h WHERE h.isOrganic = 1 AND h.rooms = coalesce(:rooms, h.rooms) AND h.title LIKE coalesce(:title, h.title) LIMIT :maxResults")
+    @Query("SELECT * FROM houses h WHERE h.rooms = coalesce(:rooms, h.rooms) AND h.title LIKE coalesce(:title, h.title) ORDER BY h.title LIMIT :maxResults")
     LiveData<List<House>> getHousesByFilters(String title, Integer rooms, Integer maxResults);
 
-    @Query("SELECT * FROM houses h WHERE h.isOrganic = 0 ORDER BY title")
+    @Query("SELECT * FROM houses h WHERE h.favorite = 1 ORDER BY title")
     LiveData<List<House>> getFavorites();
 }
