@@ -17,6 +17,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
 import smt.ort.houses.ui.adapter.HousePhotosAdapter;
@@ -32,6 +41,9 @@ public class HouseDetailFragment extends Fragment {
     private HouseDetailViewModel viewModel;
     private Menu menu;
     private Boolean itemLoaded = false;
+
+    private GoogleMap googleMap;
+    private MapView mMapView;
 
     public HouseDetailFragment() {
         // Required empty public constructor
@@ -100,6 +112,37 @@ public class HouseDetailFragment extends Fragment {
             startActivity(intent);
         });
 
+
+        //////// MapView
+
+        mMapView = view.findViewById(R.id.map_view);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.onResume();
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mMapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap mMap) {
+                googleMap = mMap;
+
+                // For showing a move to my location button
+//                googleMap.setMyLocationEnabled(true);
+
+                // For dropping a marker at a point on the Map
+                LatLng sydney = new LatLng(-34, 151);
+                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+
+                // For zooming automatically to the location of the marker
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+        });
+
         return view;
     }
 
@@ -151,4 +194,5 @@ public class HouseDetailFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }
