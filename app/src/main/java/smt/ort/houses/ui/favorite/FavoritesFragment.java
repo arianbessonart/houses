@@ -1,9 +1,7 @@
 package smt.ort.houses.ui.favorite;
 
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,20 +15,19 @@ import java.util.List;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.Favorite;
-import smt.ort.houses.model.House;
-import smt.ort.houses.ui.HomeFragment;
-import smt.ort.houses.ui.adapter.FavoriteListAdapter;
-import smt.ort.houses.ui.adapter.HouseListAdapter;
-import smt.ort.houses.ui.adapter.OnHouseListListener;
+import smt.ort.houses.model.ListLayoutView;
+import smt.ort.houses.ui.ListHouseFragment;
+import smt.ort.houses.ui.adapter.FavoritesAdapter;
+import smt.ort.houses.ui.adapter.HousesAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FavoritesFragment extends Fragment implements OnHouseListListener {
+public class FavoritesFragment extends ListHouseFragment {
 
-    private HomeFragment.OnHouseSelectedListener listener;
     private RecyclerView recyclerView;
     private FavoritesViewModel houseViewModel;
+    private ListLayoutView listLayoutView = ListLayoutView.LIST;
 
     public FavoritesFragment() {
         // Required empty public constructor
@@ -45,15 +42,6 @@ public class FavoritesFragment extends Fragment implements OnHouseListListener {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof Activity) {
-            this.listener = (HomeFragment.OnHouseSelectedListener) context;
-        }
-    }
-
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -63,7 +51,7 @@ public class FavoritesFragment extends Fragment implements OnHouseListListener {
 
         FragmentActivity activity = getActivity();
         recyclerView = view.findViewById(R.id.recyclerView);
-        final FavoriteListAdapter adapter = new FavoriteListAdapter(activity, this);
+        adapter = new FavoritesAdapter(activity, this, listLayoutView);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
@@ -74,7 +62,7 @@ public class FavoritesFragment extends Fragment implements OnHouseListListener {
                 case SUCCESS:
                     List<Favorite> favorites = favoritesResource.getData();
                     if (favorites != null && favorites.size() > 0) {
-                        adapter.setHouses(favorites);
+                        adapter.setItems(favorites);
                         recyclerView.setVisibility(View.VISIBLE);
                     } else {
                         recyclerView.setVisibility(View.GONE);
@@ -92,8 +80,4 @@ public class FavoritesFragment extends Fragment implements OnHouseListListener {
         return view;
     }
 
-    @Override
-    public void onHouseSelected(House house) {
-        this.listener.onHouseSelected(house);
-    }
 }
