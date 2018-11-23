@@ -35,13 +35,15 @@ public class HouseRepository {
     private final AppExecutors mAppExecutors;
     private HouseDao dao;
     private HousesService service;
+    private String authorization;
 
     public HouseRepository(AppExecutors appExecutors, Application app) {
         mAppExecutors = appExecutors;
         SharedPreferences sharedPreferences = app.getSharedPreferences("general", Context.MODE_PRIVATE);
         HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
         dao = db.houseDao();
-        service = ClientService.getClient(sharedPreferences.getString("authorization", "9876")).create(HousesService.class);
+        authorization = sharedPreferences.getString("authorization", null);
+        service = ClientService.getClient(authorization).create(HousesService.class);
     }
 
     public LiveData<Resource<List<House>>> getHouses(final HouseFilters filters) {
@@ -132,14 +134,15 @@ public class HouseRepository {
     }
 
     @SuppressLint("StaticFieldLeak")
-    public void toggleFavorite(final House house) {
+    public void toggleFavorite(final House house, boolean setAsFavorite) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
+                house.setFavorite(setAsFavorite);
                 dao.update(house);
                 try {
-                    HousesService serviceDebug = ClientService.getClientCall("9876").create(HousesService.class);
-                    serviceDebug.addFavorite(new FavoriteBodyRequest(house.getId())).enqueue(new Callback<ApiResponse<FavoriteBodyResponse>>() {
+                    HousesService serviceClient = ClientService.getClientCall(authorization).create(HousesService.class);
+                    serviceClient.addFavorite(new FavoriteBodyRequest(house.getId())).enqueue(new Callback<ApiResponse<FavoriteBodyResponse>>() {
                         @Override
                         public void onResponse(Call<ApiResponse<FavoriteBodyResponse>> call, Response<ApiResponse<FavoriteBodyResponse>> response) {
                             Log.d("onResponse", response.message());

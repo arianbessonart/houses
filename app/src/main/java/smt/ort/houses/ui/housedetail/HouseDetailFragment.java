@@ -87,8 +87,7 @@ public class HouseDetailFragment extends Fragment {
         });
 
         favoriteBtn.setOnClickListener(viewBtn -> {
-            house.setFavorite(!house.getFavorite());
-            viewModel.toggleFavorite(house);
+            viewModel.toggleFavorite(house, !house.getFavorite());
         });
 
         shareBtn.setOnClickListener(viewBtn -> {
@@ -143,8 +142,7 @@ public class HouseDetailFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.favorite_action_item:
-                house.setFavorite(!house.getFavorite());
-                viewModel.toggleFavorite(house);
+                viewModel.toggleFavorite(house, !house.getFavorite());
                 return true;
             case R.id.share_action_item:
                 initShareAction();

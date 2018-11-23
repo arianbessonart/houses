@@ -3,6 +3,7 @@ package smt.ort.houses.db;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
@@ -15,11 +16,20 @@ import smt.ort.houses.model.House;
 @Dao
 public interface HouseDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(House house);
 
     @Query("DELETE FROM houses")
     void deleteAllHouses();
+
+    @Query("DELETE FROM houses WHERE isOrganic = 1")
+    void deleteHouses();
+
+    @Query("DELETE FROM houses WHERE isOrganic = 0")
+    void deleteFavorites();
+
+    @Delete
+    void deleteFavorite(House house);
 
     @Query("SELECT * FROM houses ORDER BY title")
     LiveData<List<House>> getAllHouses();

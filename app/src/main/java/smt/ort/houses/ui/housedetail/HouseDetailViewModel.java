@@ -28,8 +28,8 @@ public class HouseDetailViewModel extends AndroidViewModel {
         return house;
     }
 
-    public void toggleFavorite(House house) {
-        repository.toggleFavorite(house);
+    public void toggleFavorite(House house, boolean setAsFavorite) {
+        repository.toggleFavorite(house, setAsFavorite);
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {

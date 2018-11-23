@@ -14,18 +14,13 @@ import android.view.ViewGroup;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-
-import org.json.JSONException;
 
 import java.util.Arrays;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.User;
+import smt.ort.houses.services.LoginService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,37 +63,7 @@ public class LoginFragment extends Fragment {
 
         loginButton.setReadPermissions("public_profile", "email");
 
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-
-                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), (object, response) -> {
-                    try {
-                        User user = new User(object.getString("id"), object.getString("name"), object.getString("email"));
-                        Log.d("LOGIN", object.toString());
-                        listener.onLoginSuccess(user);
-                    } catch (JSONException e) {
-                        listener.onLoginError(e);
-                    }
-                });
-
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender, birthday");
-                request.setParameters(parameters);
-                request.executeAsync();
-            }
-
-            @Override
-            public void onCancel() {
-                listener.onLoginCancel();
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d("ERROR", error.toString());
-                listener.onLoginError(error);
-            }
-        });
+        loginButton.registerCallback(callbackManager, new LoginService(getActivity().getApplication()).loginFacebookCallback(this.listener));
 
 
         AccessTokenTracker tokenTracker = new AccessTokenTracker() {
@@ -129,6 +94,5 @@ public class LoginFragment extends Fragment {
         void onLoginError(Exception e);
 
         void onLogoutSuccess();
-//        void onLogoutError(FacebookException e);
     }
 }
