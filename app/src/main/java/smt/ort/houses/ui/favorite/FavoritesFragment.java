@@ -16,10 +16,9 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import smt.ort.houses.R;
-import smt.ort.houses.model.Favorite;
 import smt.ort.houses.model.House;
+import smt.ort.houses.model.ListLayoutView;
 import smt.ort.houses.ui.HomeFragment;
-import smt.ort.houses.ui.adapter.FavoriteListAdapter;
 import smt.ort.houses.ui.adapter.HouseListAdapter;
 import smt.ort.houses.ui.adapter.OnHouseListListener;
 
@@ -31,6 +30,7 @@ public class FavoritesFragment extends Fragment implements OnHouseListListener {
     private HomeFragment.OnHouseSelectedListener listener;
     private RecyclerView recyclerView;
     private FavoritesViewModel houseViewModel;
+    private ListLayoutView listLayoutView = ListLayoutView.LIST;
 
     public FavoritesFragment() {
         // Required empty public constructor
@@ -63,7 +63,7 @@ public class FavoritesFragment extends Fragment implements OnHouseListListener {
 
         FragmentActivity activity = getActivity();
         recyclerView = view.findViewById(R.id.recyclerView);
-        final FavoriteListAdapter adapter = new FavoriteListAdapter(activity, this);
+        final HouseListAdapter adapter = new HouseListAdapter(activity, this, listLayoutView);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
@@ -72,7 +72,7 @@ public class FavoritesFragment extends Fragment implements OnHouseListListener {
         houseViewModel.getFavorites().observe(this, favoritesResource -> {
             switch (favoritesResource.getStatus()) {
                 case SUCCESS:
-                    List<Favorite> favorites = favoritesResource.getData();
+                    List<House> favorites = favoritesResource.getData();
                     if (favorites != null && favorites.size() > 0) {
                         adapter.setHouses(favorites);
                         recyclerView.setVisibility(View.VISIBLE);

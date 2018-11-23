@@ -8,13 +8,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-import smt.ort.houses.model.Favorite;
 import smt.ort.houses.model.House;
 
 
 @Database(entities = {
-        House.class, Favorite.class
-}, version = 7)
+        House.class
+}, version = 10)
 public abstract class HouseRoomDatabase extends RoomDatabase {
 
     private static volatile HouseRoomDatabase instance;
@@ -22,7 +21,7 @@ public abstract class HouseRoomDatabase extends RoomDatabase {
     private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
-//            new PopulateDbAsync(instance).execute();
+            new PopulateDbAsync(instance).execute();
         }
     };
 
@@ -52,7 +51,7 @@ public abstract class HouseRoomDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(final Void... params) {
-            mDao.deleteAll();
+            mDao.deleteAllHouses();
 //            House house = new House(1L, "Casa 1");
 //            mDao.insert(house);
 //            house = new House(2L, "Casa 2");
