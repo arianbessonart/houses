@@ -17,4 +17,5 @@
     <color name="color_blue">#007dff</color>
     <color name="color_yellow">#FFFF00</color>
     <color name="color_pink">#FF00FF</color>
+    <color name="dividerSections">#646464</color>
 </resources>

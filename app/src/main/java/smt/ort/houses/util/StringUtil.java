@@ -20,6 +20,6 @@ public class StringUtil {
     }
 
     public static String formatSquareMeters(String squareMetersStr) {
-        return squareMetersStr + "m\u00B2";
+        return squareMetersStr + " m\u00B2";
     }
 }

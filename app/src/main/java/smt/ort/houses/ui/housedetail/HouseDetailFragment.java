@@ -82,6 +82,10 @@ public class HouseDetailFragment extends Fragment {
 
         ImageView callBtn = view.findViewById(R.id.call_button);
 
+        TextView totalArea = view.findViewById(R.id.total_area_value);
+        TextView bedrooms = view.findViewById(R.id.bedrooms_value);
+        TextView bathrooms = view.findViewById(R.id.bathrooms_value);
+
         viewModel.getHouse().observe(this, resourceHouse -> {
             if (resourceHouse.getData() != null) {
                 itemLoaded = true;
@@ -98,6 +102,11 @@ public class HouseDetailFragment extends Fragment {
                 } else {
                     favoriteBtn.setImageResource(R.drawable.baseline_favorite_border_24);
                 }
+
+                // Sections
+                totalArea.setText(house.getSquareMeters() != null && !house.getSquareMeters().isEmpty() ? StringUtil.formatSquareMeters(house.getSquareMeters()) : "-");
+//                bedrooms.setText(setFeaturesText(house.getSquareMeters()));
+//                bathrooms.setText(setFeaturesText(house.getSquareMeters()));
 
                 GeocodingLocation.getAddressFromLocation(house.getNeighborhood() + ", Uruguay", getContext(), new Handler() {
                     @Override
@@ -138,6 +147,10 @@ public class HouseDetailFragment extends Fragment {
         mMapView.getMapAsync(mMap -> googleMap = mMap);
 
         return view;
+    }
+
+    private String setFeaturesText(String value) {
+        return value != null && value.isEmpty() ? value : "-";
     }
 
     private void setCoordsAndMoveMap(LocationAddress locationAddress) {

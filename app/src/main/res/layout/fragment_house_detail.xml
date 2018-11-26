@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollViewDetail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/bottom_detail"
         tools:context=".ui.housedetail.HouseDetailFragment">
 
         <android.support.v4.view.ViewPager
@@ -24,9 +26,16 @@
         <android.support.constraint.Guideline
             android:id="@+id/guideline_vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.05" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline_vertical_middle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".5" />
 
         <TextView
             android:id="@+id/subtitle"
@@ -93,12 +102,89 @@
             app:layout_constraintStart_toEndOf="@+id/share_button"
             app:layout_constraintTop_toBottomOf="@id/price" />
 
+        <View
+            android:id="@+id/location_section"
+            android:layout_width="match_parent"
+            android:layout_height=".5dp"
+            android:layout_marginTop="@dimen/margin_top_detail_sections"
+            android:background="@color/dividerSections"
+            app:layout_constraintTop_toBottomOf="@id/call_button" />
+
+        <TextView
+            android:id="@+id/location_title"
+            style="@style/detailTitleSections"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/location"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+            app:layout_constraintTop_toBottomOf="@id/location_section" />
+
         <com.google.android.gms.maps.MapView
             android:id="@+id/map_view"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="@dimen/map_detail_height"
             android:layout_marginTop="@dimen/margin_top_detail_sections"
-            app:layout_constraintTop_toBottomOf="@id/call_button" />
+            app:layout_constraintTop_toBottomOf="@id/location_title" />
+
+        <View
+            android:id="@+id/feature_section"
+            android:layout_width="match_parent"
+            android:layout_height=".5dp"
+            android:layout_marginTop="@dimen/margin_top_detail_sections"
+            android:background="@color/dividerSections"
+            app:layout_constraintTop_toBottomOf="@id/map_view" />
+
+        <TextView
+            android:id="@+id/feature_title"
+            style="@style/detailTitleSections"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/features"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+            app:layout_constraintTop_toBottomOf="@id/feature_section" />
+
+        <TextView
+            android:id="@+id/total_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_area"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+            app:layout_constraintTop_toBottomOf="@id/feature_title" />
+
+        <TextView
+            android:id="@+id/total_area_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+            app:layout_constraintTop_toBottomOf="@id/total_area" />
+
+        <TextView
+            android:id="@+id/bedrooms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bedrooms"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical_middle"
+            app:layout_constraintTop_toBottomOf="@id/feature_title" />
+
+        <TextView
+            android:id="@+id/bedrooms_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical_middle"
+            app:layout_constraintTop_toBottomOf="@id/bedrooms" />
+
+        <TextView
+            android:id="@+id/bathrooms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bathrooms"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical" />
+
+        <TextView
+            android:id="@+id/bathrooms_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical" />
 
     </android.support.constraint.ConstraintLayout>
 

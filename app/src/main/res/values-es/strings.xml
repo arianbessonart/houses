@@ -37,4 +37,9 @@
     <string name="add_to_favorite">Agregar a Favoritos</string>
     <string name="favorite_desc">Agregar a Favoritos</string>
     <string name="share_desc">Compartir Casa</string>
+    <string name="features">Características</string>
+    <string name="total_area">Superficie Total:</string>
+    <string name="bedrooms">Habitaciones:</string>
+    <string name="bathrooms">Baños:</string>
+    <string name="location">Ubicación</string>
 </resources>

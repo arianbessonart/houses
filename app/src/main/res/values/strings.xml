@@ -37,4 +37,9 @@
     <string name="add_to_favorite">Add to Favorite</string>
     <string name="favorite_desc">Favorite House</string>
     <string name="share_desc">Share House</string>
+    <string name="features">Features</string>
+    <string name="total_area">Total Area:</string>
+    <string name="bedrooms">Bedrooms:</string>
+    <string name="bathrooms">Bathrooms:</string>
+    <string name="location">Location</string>
 </resources>

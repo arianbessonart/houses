@@ -17,4 +17,10 @@
     <dimen name="margin_top_actions">20dp</dimen>
     <dimen name="margin_bottom_photo_profile">10dp</dimen>
     <dimen name="margin_top_detail_sections">25dp</dimen>
+    <dimen name="map_detail_height">120dp</dimen>
+    <dimen name="detail_title_sections">20sp</dimen>
+    <dimen name="detail_title_sections_margin_bottom">10dp</dimen>
+    <dimen name="detail_title_sections_margin_top">10dp</dimen>
+    <dimen name="bottom_detail">20dp</dimen>
+
 </resources>
