@@ -31,16 +31,19 @@ public class HousePhotosAdapter extends PagerAdapter {
         View itemView = mLayoutInflater.inflate(R.layout.photo_pager_item, container, false);
         ImageView imageView = itemView.findViewById(R.id.imageViewDetailPhoto);
 
-        Picasso.get().load(mPhotos.get(position).getUrl()).into(imageView);
+        if (mPhotos.size() == 0) {
+            Picasso.get().load(R.drawable.camera).into(imageView);
+        } else {
+            Picasso.get().load(mPhotos.get(0).getUrl()).placeholder(R.drawable.camera).into(imageView);
+        }
 
         container.addView(itemView);
-
         return itemView;
     }
 
     @Override
     public int getCount() {
-        return mPhotos.size();
+        return Math.max(mPhotos.size(), 1);
     }
 
     @Override

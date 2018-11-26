@@ -1,10 +1,13 @@
 package smt.ort.houses.ui.housedetail;
 
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -21,13 +24,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
+import smt.ort.houses.model.LocationAddress;
+import smt.ort.houses.services.GeocodingLocation;
 import smt.ort.houses.ui.adapter.HousePhotosAdapter;
 import smt.ort.houses.util.StringUtil;
 
@@ -49,6 +53,7 @@ public class HouseDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @SuppressLint("HandlerLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,9 +87,7 @@ public class HouseDetailFragment extends Fragment {
                 itemLoaded = true;
                 getActivity().invalidateOptionsMenu();
                 House newHouse = resourceHouse.getData();
-                if (newHouse.getPhotos().size() > 0) {
-                    viewPager.setAdapter(new HousePhotosAdapter(getActivity(), newHouse.getPhotos()));
-                }
+                viewPager.setAdapter(new HousePhotosAdapter(getActivity(), newHouse.getPhotos()));
                 house = resourceHouse.getData();
                 subtitleTextView.setText(buildSubtitle(house));
                 titleTextView.setText(house.getTitle());
@@ -95,25 +98,32 @@ public class HouseDetailFragment extends Fragment {
                 } else {
                     favoriteBtn.setImageResource(R.drawable.baseline_favorite_border_24);
                 }
+
+                GeocodingLocation.getAddressFromLocation(house.getNeighborhood() + ", Uruguay", getContext(), new Handler() {
+                    @Override
+                    public void handleMessage(Message message) {
+                        LocationAddress locationAddress;
+                        if (message.what == 1) {
+                            Bundle bundle = message.getData();
+                            locationAddress = bundle.getParcelable(GeocodingLocation.BUNDLE_LOCATION_ADDRESS_KEY);
+                            if (locationAddress != null) {
+                                setCoordsAndMoveMap(locationAddress);
+                            }
+                        }
+                    }
+                });
             }
         });
 
-        favoriteBtn.setOnClickListener(viewBtn -> {
-            viewModel.toggleFavorite(house, !house.getFavorite());
-        });
+        favoriteBtn.setOnClickListener(viewBtn -> viewModel.toggleFavorite(house, !house.getFavorite()));
 
-        shareBtn.setOnClickListener(viewBtn -> {
-            initShareAction();
-        });
+        shareBtn.setOnClickListener(viewBtn -> initShareAction());
 
         callBtn.setOnClickListener(viewBtn -> {
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse("tel:" + "+59899000000"));
             startActivity(intent);
         });
-
-
-        //////// MapView
 
         mMapView = view.findViewById(R.id.map_view);
         mMapView.onCreate(savedInstanceState);
@@ -125,25 +135,23 @@ public class HouseDetailFragment extends Fragment {
             e.printStackTrace();
         }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap mMap) {
-                googleMap = mMap;
-
-                // For showing a move to my location button
-//                googleMap.setMyLocationEnabled(true);
-
-                // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(-34, 151);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            }
-        });
+        mMapView.getMapAsync(mMap -> googleMap = mMap);
 
         return view;
+    }
+
+    private void setCoordsAndMoveMap(LocationAddress locationAddress) {
+        LatLng houseLocation;
+        if (locationAddress.getLat() == null || locationAddress.getLng() == null) {
+            houseLocation = new LatLng(GeocodingLocation.DEFAULT_LAT, GeocodingLocation.DEFAULT_LNG);
+        } else {
+            houseLocation = new LatLng(locationAddress.getLat(), locationAddress.getLng());
+        }
+
+        googleMap.addMarker(new MarkerOptions().position(houseLocation).title(locationAddress.getLocation()));
+
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(houseLocation).zoom(12).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     private String buildSubtitle(House house) {

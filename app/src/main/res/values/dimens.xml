@@ -16,4 +16,5 @@
     <dimen name="price_text_size_big">22sp</dimen>
     <dimen name="margin_top_actions">20dp</dimen>
     <dimen name="margin_bottom_photo_profile">10dp</dimen>
+    <dimen name="margin_top_detail_sections">25dp</dimen>
 </resources>
