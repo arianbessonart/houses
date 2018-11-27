@@ -1,16 +1,17 @@
 package smt.ort.houses.network;
 
-import java.io.IOException;
-
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import smt.ort.houses.BuildConfig;
 import smt.ort.houses.network.utils.LiveDataCallAdapterFactory;
 
 public class ClientService {
+
+    private static String URL = BuildConfig.API_URL;
 
     public static Retrofit getClient(final String authorization) {
 
@@ -30,7 +31,7 @@ public class ClientService {
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://173.233.86.183:8080/CursoAndroidWebApp/rest/")
+                .baseUrl(URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client).addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .build();
@@ -56,7 +57,7 @@ public class ClientService {
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://173.233.86.183:8080/CursoAndroidWebApp/rest/")
+                .baseUrl(URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();

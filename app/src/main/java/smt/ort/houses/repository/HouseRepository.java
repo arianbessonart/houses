@@ -44,17 +44,17 @@ public class HouseRepository {
 
     private HouseRepository(AppExecutors appExecutors, Application app) {
         mAppExecutors = appExecutors;
-        SharedPreferences sharedPreferences = app.getSharedPreferences("general", Context.MODE_PRIVATE);
         HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
         dao = db.houseDao();
-        authorization = sharedPreferences.getString("authorization", null);
-        service = ClientService.getClient(authorization).create(HousesService.class);
     }
 
     public static HouseRepository getInstance(AppExecutors appExecutors, Application app) {
         if (instance == null) {
             instance = new HouseRepository(appExecutors, app);
         }
+        SharedPreferences sharedPreferences = app.getSharedPreferences("general", Context.MODE_PRIVATE);
+        instance.authorization = sharedPreferences.getString("authorization", null);
+        instance.service = ClientService.getClient(instance.authorization).create(HousesService.class);
         return instance;
     }
 

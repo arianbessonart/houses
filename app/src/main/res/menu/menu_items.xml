@@ -4,39 +4,32 @@
         <item
             android:id="@+id/home_item"
             android:icon="@drawable/baseline_home_24"
-            android:title="@string/home"
-        />
+            android:title="@string/home" />
         <item
             android:id="@+id/favorite_item"
             android:icon="@drawable/baseline_favorite_border_24"
             android:title="@string/favorite"
-            android:visible="false"
-            />
+            android:visible="false" />
         <item
             android:id="@+id/login_item"
-            android:icon="@drawable/settings"
-            android:title="@string/login"
-            />
+            android:icon="@drawable/baseline_power_settings_new_24"
+            android:title="@string/login" />
         <item
             android:id="@+id/logout_item"
-            android:icon="@drawable/settings"
+            android:icon="@drawable/baseline_power_settings_new_24"
             android:title="@string/logout"
-            android:visible="false"
-            />
+            android:visible="false" />
         <item
             android:id="@+id/settings_item"
             android:icon="@drawable/settings"
-            android:title="@string/action_settings"
-            />
+            android:title="@string/action_settings" />
         <item
             android:id="@+id/terms_item"
             android:icon="@drawable/baseline_text_fields_24"
-            android:title="@string/terms"
-            />
+            android:title="@string/terms" />
         <item
             android:id="@+id/help_video_item"
             android:icon="@drawable/baseline_text_fields_24"
-            android:title="@string/help"
-            />
+            android:title="@string/help" />
     </group>
 </menu>

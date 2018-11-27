@@ -20,7 +20,7 @@
     <string name="error_loading">Error al obtener las casas 😰</string>
     <string name="error_no_results">No se encontraron casas 😔</string>
     <string name="has_barbecue">Con Parrillero</string>
-    <string name="has_garage">Has Garaje</string>
+    <string name="has_garage">Con Garaje</string>
 
     <string name="room_1">1</string>
     <string name="room_2">2</string>

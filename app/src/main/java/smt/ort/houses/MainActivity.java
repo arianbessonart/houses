@@ -30,7 +30,7 @@ import smt.ort.houses.ui.favorite.FavoritesFragment;
 import smt.ort.houses.ui.housedetail.HouseDetailFragment;
 import smt.ort.houses.ui.terms.TermsFragment;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.OnHouseSelectedListener, LoginFragment.LoginListener {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnHouseSelectedListener, LoginFragment.LoginListener, HouseDetailFragment.OnFavoriteListener {
 
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         navigationView.getMenu().findItem(R.id.favorite_item).setVisible(true);
         invalidateOptionsMenu();
         goToFragment(HomeFragment.newInstance(), getResources().getString(R.string.home), null);
-        getSupportFragmentManager().beginTransaction().replace(R.id.flContent, HomeFragment.newInstance()).addToBackStack(null).commit();
         TextView textView = findViewById(R.id.nav_header_textView);
         textView.setText(user.getName());
         ImageView imageView = findViewById(R.id.nav_header_image);
@@ -191,5 +190,16 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         invalidateOptionsMenu();
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("login", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("userId").apply();
+    }
+
+    @Override
+    public boolean onToggleSelected(House house) {
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("login", Context.MODE_PRIVATE);
+        String userId = sharedPreferences.getString("userId", null);
+        if (userId == null) {
+            goToFragment(LoginFragment.newInstance(), getResources().getString(R.string.home), null);
+            return false;
+        }
+        return true;
     }
 }

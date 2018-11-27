@@ -2,7 +2,9 @@ package smt.ort.houses.ui.housedetail;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,12 +48,21 @@ public class HouseDetailFragment extends Fragment {
     private HouseDetailViewModel viewModel;
     private Menu menu;
     private Boolean itemLoaded = false;
+    private OnFavoriteListener listener;
 
     private GoogleMap googleMap;
     private MapView mMapView;
 
     public HouseDetailFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity) {
+            this.listener = (OnFavoriteListener) context;
+        }
     }
 
     @SuppressLint("HandlerLeak")
@@ -225,7 +236,9 @@ public class HouseDetailFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.favorite_action_item:
-                viewModel.toggleFavorite(house, !house.getFavorite());
+                if (this.listener.onToggleSelected(house)) {
+                    viewModel.toggleFavorite(house, !house.getFavorite());
+                }
                 return true;
             case R.id.share_action_item:
                 initShareAction();
@@ -233,6 +246,10 @@ public class HouseDetailFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public interface OnFavoriteListener {
+        boolean onToggleSelected(House house);
     }
 
 }

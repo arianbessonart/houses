@@ -34,6 +34,11 @@ public class LoginFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static LoginFragment newInstance() {
+        LoginFragment fragment = new LoginFragment();
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
