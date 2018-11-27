@@ -2,6 +2,7 @@ package smt.ort.houses.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -25,6 +26,7 @@ public class HousesListBaseFragment extends Fragment implements OnClickItemListe
     protected HouseListAdapter adapter;
     protected RecyclerView recyclerView;
     protected ListLayoutView listLayoutView = ListLayoutView.LIST;
+    protected Boolean isLandscape = false;
     private OnHouseSelectedListener listener;
     private HashMap<ListLayoutView, ListLayoutView> viewStates = new HashMap<ListLayoutView, ListLayoutView>() {{
         put(ListLayoutView.LIST, ListLayoutView.GRID);
@@ -32,10 +34,10 @@ public class HousesListBaseFragment extends Fragment implements OnClickItemListe
         put(ListLayoutView.LIST_ITEM, ListLayoutView.LIST);
     }};
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
