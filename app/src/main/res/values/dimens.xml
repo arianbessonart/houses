@@ -22,5 +22,6 @@
     <dimen name="detail_title_sections_margin_bottom">10dp</dimen>
     <dimen name="detail_title_sections_margin_top">10dp</dimen>
     <dimen name="bottom_detail">20dp</dimen>
+    <dimen name="margin_card_view">10dp</dimen>
 
 </resources>

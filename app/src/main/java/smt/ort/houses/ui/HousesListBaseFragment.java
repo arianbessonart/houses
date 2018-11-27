@@ -2,6 +2,7 @@ package smt.ort.houses.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,8 @@ import smt.ort.houses.ui.adapter.OnClickItemListener;
 
 public class HousesListBaseFragment extends Fragment implements OnClickItemListener {
 
+    public final static String VIEW_LAYOUT_KEY = "viewLayout";
+
     protected HouseListAdapter adapter;
     protected RecyclerView recyclerView;
     protected ListLayoutView listLayoutView = ListLayoutView.LIST;
@@ -38,6 +41,13 @@ public class HousesListBaseFragment extends Fragment implements OnClickItemListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences = getActivity().getApplication().getSharedPreferences("general", Context.MODE_PRIVATE);
+        listLayoutView = ListLayoutView.getFromString(sharedPreferences.getString(VIEW_LAYOUT_KEY, ListLayoutView.LIST.getName()));
     }
 
     @Override
@@ -70,6 +80,7 @@ public class HousesListBaseFragment extends Fragment implements OnClickItemListe
                         recyclerView.setAdapter(adapter);
                         listLayoutView = ListLayoutView.LIST;
                         item.setIcon(R.drawable.baseline_view_module_24);
+                        storeLayoutView();
                         break;
                     case GRID:
                         adapter.setLayout(ListLayoutView.GRID);
@@ -77,6 +88,7 @@ public class HousesListBaseFragment extends Fragment implements OnClickItemListe
                         recyclerView.setAdapter(adapter);
                         listLayoutView = ListLayoutView.GRID;
                         item.setIcon(R.drawable.baseline_view_list_24);
+                        storeLayoutView();
                         break;
                     case LIST_ITEM:
                         adapter.setLayout(ListLayoutView.LIST_ITEM);
@@ -85,12 +97,18 @@ public class HousesListBaseFragment extends Fragment implements OnClickItemListe
                         recyclerView.setAdapter(adapter);
                         listLayoutView = ListLayoutView.LIST_ITEM;
                         item.setIcon(R.drawable.baseline_view_headline_24);
+                        storeLayoutView();
                         break;
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void storeLayoutView() {
+        SharedPreferences sharedPreferences = getActivity().getApplication().getSharedPreferences("general", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(VIEW_LAYOUT_KEY, listLayoutView.getName());
     }
 
 
