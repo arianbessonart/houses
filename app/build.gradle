@@ -57,4 +57,7 @@ dependencies {
     implementation 'com.zhouyou:signseekbar:1.0.6'
 
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
+
+    // Fuzzy
+    implementation 'me.xdrop:fuzzywuzzy:1.2.0'
 }

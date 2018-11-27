@@ -30,7 +30,7 @@
     <string name="view">Vista</string>
 
     <string name="total">totales</string>
-    <string name="rooms">habitaciones</string>
+    <string name="roomsQuantity">habitaciones</string>
     <string name="contact">Contactar</string>
     <string name="call">Llamar</string>
 

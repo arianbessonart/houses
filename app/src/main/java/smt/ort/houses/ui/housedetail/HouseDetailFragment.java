@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.LocationAddress;
+import smt.ort.houses.model.Room;
 import smt.ort.houses.services.GeocodingLocation;
 import smt.ort.houses.ui.adapter.HousePhotosAdapter;
 import smt.ort.houses.util.StringUtil;
@@ -105,8 +106,26 @@ public class HouseDetailFragment extends Fragment {
 
                 // Sections
                 totalArea.setText(house.getSquareMeters() != null && !house.getSquareMeters().isEmpty() ? StringUtil.formatSquareMeters(house.getSquareMeters()) : "-");
-//                bedrooms.setText(setFeaturesText(house.getSquareMeters()));
-//                bathrooms.setText(setFeaturesText(house.getSquareMeters()));
+                for (Room room : house.getRooms()) {
+                    if (room.getType() != null) {
+                        switch (room.getType()) {
+                            case BEDROOM:
+                                bedrooms.setText(setFeaturesText(String.valueOf(room.getQuantity())));
+                                break;
+                            case BATHROOM:
+                                bathrooms.setText(setFeaturesText(String.valueOf(room.getQuantity())));
+                                break;
+                            case KITCHEN:
+                                break;
+                            case LIVING:
+                                break;
+                            case GARAGE:
+                                break;
+                        }
+                    } else {
+                        Log.w("RoomType", "Room " + room + " doesnot have a type");
+                    }
+                }
 
                 GeocodingLocation.getAddressFromLocation(house.getNeighborhood() + ", Uruguay", getContext(), new Handler() {
                     @Override
@@ -149,8 +168,8 @@ public class HouseDetailFragment extends Fragment {
         return view;
     }
 
-    private String setFeaturesText(String value) {
-        return value != null && value.isEmpty() ? value : "-";
+    private String setFeaturesText(String item) {
+        return item != null && !item.isEmpty() ? item : "-";
     }
 
     private void setCoordsAndMoveMap(LocationAddress locationAddress) {
@@ -168,7 +187,7 @@ public class HouseDetailFragment extends Fragment {
     }
 
     private String buildSubtitle(House house) {
-        return StringUtil.formatSquareMeters(house.getSquareMeters()) + " " + getResources().getString(R.string.total) + DIVIDER + house.getRooms() + " " + getResources().getString(R.string.rooms);
+        return StringUtil.formatSquareMeters(house.getSquareMeters()) + " " + getResources().getString(R.string.total) + DIVIDER + house.getRoomsQuantity() + " " + getResources().getString(R.string.roomsQuantity);
     }
 
     private void initShareAction() {

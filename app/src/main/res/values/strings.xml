@@ -30,7 +30,7 @@
     <string name="view">View</string>
 
     <string name="total">total</string>
-    <string name="rooms">rooms</string>
+    <string name="roomsQuantity">rooms</string>
     <string name="contact">Contact</string>
     <string name="call">Call</string>
 

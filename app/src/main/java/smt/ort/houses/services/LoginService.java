@@ -40,7 +40,7 @@ public class LoginService {
                         User user = new User(object.getString("id"), object.getString("name"), object.getString("email"));
                         Log.d("LOGIN", object.toString());
                         loginListener.onLoginSuccess(user);
-                        setServerSession(loginResult.getAccessToken().getToken(), user.getEmail());
+                        setServerSession(object.getString("id"), user.getEmail());
                     } catch (JSONException e) {
                         loginListener.onLoginError(e);
                     }
