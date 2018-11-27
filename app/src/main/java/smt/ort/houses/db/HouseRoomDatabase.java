@@ -21,7 +21,7 @@ public abstract class HouseRoomDatabase extends RoomDatabase {
     private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
-            new PopulateDbAsync(instance).execute();
+//            new PopulateDbAsync(instance).execute();
         }
     };
 

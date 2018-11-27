@@ -34,14 +34,13 @@ import smt.ort.houses.util.RateLimiter;
 
 public class HouseRepository {
 
-
     private static HouseRepository instance;
 
     private final AppExecutors mAppExecutors;
     private HouseDao dao;
     private HousesService service;
     private String authorization;
-    private RateLimiter mRateLimiter = new RateLimiter(20, TimeUnit.SECONDS);
+    private RateLimiter mRateLimiter = new RateLimiter(10, TimeUnit.SECONDS);
 
     private HouseRepository(AppExecutors appExecutors, Application app) {
         mAppExecutors = appExecutors;
@@ -58,15 +57,6 @@ public class HouseRepository {
         }
         return instance;
     }
-
-//    public HouseRepository(AppExecutors appExecutors, Application app) {
-//        mAppExecutors = appExecutors;
-//        SharedPreferences sharedPreferences = app.getSharedPreferences("general", Context.MODE_PRIVATE);
-//        HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
-//        dao = db.houseDao();
-//        authorization = sharedPreferences.getString("authorization", null);
-//        service = ClientService.getClient(authorization).create(HousesService.class);
-//    }
 
     public LiveData<Resource<List<House>>> getHouses(final HouseFilters filters) {
         return new NetworkBoundResource<List<House>, ResponseHouses>(mAppExecutors) {
@@ -134,7 +124,7 @@ public class HouseRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<House> data) {
-                return data == null || data.isEmpty();
+                return data == null || data.isEmpty() || mRateLimiter.shouldFetch("favorites");
             }
 
             @Override

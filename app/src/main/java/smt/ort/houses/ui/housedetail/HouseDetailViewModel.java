@@ -20,7 +20,6 @@ public class HouseDetailViewModel extends AndroidViewModel {
 
     public HouseDetailViewModel(@NonNull Application application, final String houseID) {
         super(application);
-//        repository = new HouseRepository(new AppExecutors(),application);
         repository = HouseRepository.getInstance(new AppExecutors(),application);
         house = repository.getHouse(houseID);
     }
