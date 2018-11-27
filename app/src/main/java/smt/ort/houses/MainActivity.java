@@ -3,6 +3,7 @@ package smt.ort.houses;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -33,10 +34,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
 
     DrawerLayout drawer;
     NavigationView navigationView;
+    private Boolean isLandscape = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,7 +107,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         setTitle(title);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction().replace(R.id.flContent, fragment);
+        FragmentTransaction transaction;
+
+        if (isLandscape) {
+            transaction = fragmentManager.beginTransaction().replace(R.id.flContentDetail, fragment);
+        } else {
+            transaction = fragmentManager.beginTransaction().replace(R.id.flContent, fragment);
+        }
+
         if (addToBackStack != null && !addToBackStack.isEmpty()) {
             transaction.addToBackStack(addToBackStack);
         } else {
@@ -134,8 +146,11 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
         args.putParcelable("selected", house);
         fragment.setArguments(args);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
-
+        if (isLandscape) {
+            fragmentManager.beginTransaction().replace(R.id.flContentDetail, fragment).addToBackStack(null).commit();
+        } else {
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
+        }
     }
 
     @Override
