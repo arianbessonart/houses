@@ -1,12 +1,14 @@
 package smt.ort.houses.ui.housedetail;
 
 
-import android.arch.lifecycle.Observer;
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,27 +17,44 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import smt.ort.houses.R;
 import smt.ort.houses.model.House;
-import smt.ort.houses.network.Resource;
+import smt.ort.houses.model.LocationAddress;
+import smt.ort.houses.model.Room;
+import smt.ort.houses.services.GeocodingLocation;
 import smt.ort.houses.ui.adapter.HousePhotosAdapter;
-import smt.ort.houses.ui.dialog.FilterDialog;
+import smt.ort.houses.util.StringUtil;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HouseDetailFragment extends Fragment {
 
+    private final String DIVIDER = " | ";
     private House house;
     private HouseDetailViewModel viewModel;
     private Menu menu;
     private Boolean itemLoaded = false;
 
+    private GoogleMap googleMap;
+    private MapView mMapView;
+
     public HouseDetailFragment() {
         // Required empty public constructor
     }
 
+    @SuppressLint("HandlerLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,23 +75,127 @@ public class HouseDetailFragment extends Fragment {
 
         viewModel = ViewModelProviders.of(this, factory).get(HouseDetailViewModel.class);
 
-        viewModel.getHouse().observe(this, new Observer<Resource<House>>() {
-            @Override
-            public void onChanged(@Nullable Resource<House> resourceHouse) {
-                if (resourceHouse.getData() != null) {
-                    itemLoaded = true;
-                    getActivity().invalidateOptionsMenu();
-                    House newHouse = resourceHouse.getData();
-                    if (newHouse.getPhotos().size() > 0) {
-                        viewPager.setAdapter(new HousePhotosAdapter(getActivity(), newHouse.getPhotos()));
-                    }
-                    house = resourceHouse.getData();
+        TextView subtitleTextView = view.findViewById(R.id.subtitle);
+        TextView titleTextView = view.findViewById(R.id.title);
+        TextView priceTextView = view.findViewById(R.id.price);
+        ImageView favoriteBtn = view.findViewById(R.id.favorite_button);
+        ImageView shareBtn = view.findViewById(R.id.share_button);
+
+        ImageView callBtn = view.findViewById(R.id.call_button);
+
+        TextView totalArea = view.findViewById(R.id.total_area_value);
+        TextView bedrooms = view.findViewById(R.id.bedrooms_value);
+        TextView bathrooms = view.findViewById(R.id.bathrooms_value);
+
+        viewModel.getHouse().observe(this, resourceHouse -> {
+            if (resourceHouse.getData() != null) {
+                itemLoaded = true;
+                getActivity().invalidateOptionsMenu();
+                House newHouse = resourceHouse.getData();
+                viewPager.setAdapter(new HousePhotosAdapter(getActivity(), newHouse.getPhotos()));
+                house = resourceHouse.getData();
+                subtitleTextView.setText(buildSubtitle(house));
+                titleTextView.setText(house.getTitle());
+                priceTextView.setText(StringUtil.formatCurrency(house.getPrice()));
+
+                if (house.getFavorite()) {
+                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_24);
+                } else {
+                    favoriteBtn.setImageResource(R.drawable.baseline_favorite_border_24);
                 }
+
+                // Sections
+                totalArea.setText(house.getSquareMeters() != null && !house.getSquareMeters().isEmpty() ? StringUtil.formatSquareMeters(house.getSquareMeters()) : "-");
+                for (Room room : house.getRooms()) {
+                    if (room.getType() != null) {
+                        switch (room.getType()) {
+                            case BEDROOM:
+                                bedrooms.setText(setFeaturesText(String.valueOf(room.getQuantity())));
+                                break;
+                            case BATHROOM:
+                                bathrooms.setText(setFeaturesText(String.valueOf(room.getQuantity())));
+                                break;
+                            case KITCHEN:
+                                break;
+                            case LIVING:
+                                break;
+                            case GARAGE:
+                                break;
+                        }
+                    } else {
+                        Log.w("RoomType", "Room " + room + " doesnot have a type");
+                    }
+                }
+
+                GeocodingLocation.getAddressFromLocation(house.getNeighborhood() + ", Uruguay", getContext(), new Handler() {
+                    @Override
+                    public void handleMessage(Message message) {
+                        LocationAddress locationAddress;
+                        if (message.what == 1) {
+                            Bundle bundle = message.getData();
+                            locationAddress = bundle.getParcelable(GeocodingLocation.BUNDLE_LOCATION_ADDRESS_KEY);
+                            if (locationAddress != null) {
+                                setCoordsAndMoveMap(locationAddress);
+                            }
+                        }
+                    }
+                });
             }
         });
 
-        // Inflate the layout for this fragment
+        favoriteBtn.setOnClickListener(viewBtn -> viewModel.toggleFavorite(house, !house.getFavorite()));
+
+        shareBtn.setOnClickListener(viewBtn -> initShareAction());
+
+        callBtn.setOnClickListener(viewBtn -> {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + "+59899000000"));
+            startActivity(intent);
+        });
+
+        mMapView = view.findViewById(R.id.map_view);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.onResume();
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mMapView.getMapAsync(mMap -> googleMap = mMap);
+
         return view;
+    }
+
+    private String setFeaturesText(String item) {
+        return item != null && !item.isEmpty() ? item : "-";
+    }
+
+    private void setCoordsAndMoveMap(LocationAddress locationAddress) {
+        LatLng houseLocation;
+        if (locationAddress.getLat() == null || locationAddress.getLng() == null) {
+            houseLocation = new LatLng(GeocodingLocation.DEFAULT_LAT, GeocodingLocation.DEFAULT_LNG);
+        } else {
+            houseLocation = new LatLng(locationAddress.getLat(), locationAddress.getLng());
+        }
+
+        googleMap.addMarker(new MarkerOptions().position(houseLocation).title(locationAddress.getLocation()));
+
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(houseLocation).zoom(12).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private String buildSubtitle(House house) {
+        return StringUtil.formatSquareMeters(house.getSquareMeters()) + " " + getResources().getString(R.string.total) + DIVIDER + house.getRoomsQuantity() + " " + getResources().getString(R.string.roomsQuantity);
+    }
+
+    private void initShareAction() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, house.getTitle());
+        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "http://www.houses.com/houses/" + house.getId());
+        startActivity(Intent.createChooser(shareIntent, "Share link!"));
     }
 
     @Override
@@ -102,11 +225,14 @@ public class HouseDetailFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.favorite_action_item:
-                house.setFavorite(!house.getFavorite());
-                viewModel.toggleFavorite(house);
+                viewModel.toggleFavorite(house, !house.getFavorite());
+                return true;
+            case R.id.share_action_item:
+                initShareAction();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

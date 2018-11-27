@@ -3,7 +3,6 @@ package smt.ort.houses.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -14,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(tableName = "houses")
+@Entity(tableName = "houses", primaryKeys = {"id"})
 public class House implements Parcelable {
 
     @SuppressWarnings("unused")
@@ -29,7 +28,6 @@ public class House implements Parcelable {
             return new House[size];
         }
     };
-    @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
     @SerializedName("InmuebleId")
@@ -43,9 +41,9 @@ public class House implements Parcelable {
     @ColumnInfo(name = "neighborhood")
     @SerializedName("InmuebleBarrio")
     private String neighborhood;
-    @ColumnInfo(name = "rooms")
+    @ColumnInfo(name = "roomsQuantity")
     @SerializedName("InmuebleCantDormitorio")
-    private Integer rooms;
+    private Integer roomsQuantity;
     @ColumnInfo(name = "squareMeters")
     @SerializedName("InmuebleMetrosCuadrados")
     private String squareMeters;
@@ -68,6 +66,10 @@ public class House implements Parcelable {
     @ColumnInfo(name = "favorite")
     @SerializedName("Favorito")
     private Boolean favorite;
+    @ColumnInfo(name = "rooms")
+    @SerializedName("Habitaciones")
+    @TypeConverters({ConverterRoom.class})
+    private List<Room> rooms;
 
     public House() {
     }
@@ -77,7 +79,7 @@ public class House implements Parcelable {
         title = in.readString();
         price = in.readString();
         neighborhood = in.readString();
-        rooms = in.readByte() == 0x00 ? null : in.readInt();
+        roomsQuantity = in.readByte() == 0x00 ? null : in.readInt();
         squareMeters = in.readString();
         byte hasGarageVal = in.readByte();
         hasGarage = hasGarageVal == 0x02 ? null : hasGarageVal != 0x00;
@@ -95,6 +97,12 @@ public class House implements Parcelable {
         }
         byte favoriteVal = in.readByte();
         favorite = favoriteVal == 0x02 ? null : favoriteVal != 0x00;
+        if (in.readByte() == 0x01) {
+            rooms = new ArrayList<Room>();
+            in.readList(rooms, Room.class.getClassLoader());
+        } else {
+            rooms = null;
+        }
     }
 
     public String getId() {
@@ -129,12 +137,12 @@ public class House implements Parcelable {
         this.neighborhood = neighborhood;
     }
 
-    public Integer getRooms() {
-        return rooms;
+    public Integer getRoomsQuantity() {
+        return roomsQuantity;
     }
 
-    public void setRooms(Integer rooms) {
-        this.rooms = rooms;
+    public void setRoomsQuantity(Integer roomsQuantity) {
+        this.roomsQuantity = roomsQuantity;
     }
 
     public String getSquareMeters() {
@@ -193,6 +201,14 @@ public class House implements Parcelable {
         this.favorite = favorite;
     }
 
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -204,11 +220,11 @@ public class House implements Parcelable {
         dest.writeString(title);
         dest.writeString(price);
         dest.writeString(neighborhood);
-        if (rooms == null) {
+        if (roomsQuantity == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeInt(rooms);
+            dest.writeInt(roomsQuantity);
         }
         dest.writeString(squareMeters);
         if (hasGarage == null) {
@@ -241,6 +257,12 @@ public class House implements Parcelable {
             dest.writeByte((byte) (0x02));
         } else {
             dest.writeByte((byte) (favorite ? 0x01 : 0x00));
+        }
+        if (rooms == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(rooms);
         }
     }
 }

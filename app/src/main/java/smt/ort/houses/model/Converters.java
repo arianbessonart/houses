@@ -43,4 +43,16 @@ public class Converters {
         return new Gson().toJson(list);
     }
 
+
+    @TypeConverter
+    public static List<Room> stringToListRoom(String data) {
+        if (data == null) {
+            return Collections.emptyList();
+        }
+
+        Type listType = new TypeToken<List<Photo>>() {
+        }.getType();
+        return new Gson().fromJson(data, listType);
+    }
+
 }

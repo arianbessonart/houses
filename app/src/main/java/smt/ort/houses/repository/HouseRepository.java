@@ -18,12 +18,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import smt.ort.houses.db.HouseDao;
 import smt.ort.houses.db.HouseRoomDatabase;
-import smt.ort.houses.model.Favorite;
 import smt.ort.houses.model.FavoriteBodyRequest;
 import smt.ort.houses.model.FavoriteBodyResponse;
 import smt.ort.houses.model.House;
 import smt.ort.houses.model.HouseFilters;
-import smt.ort.houses.model.ResponseFavorites;
 import smt.ort.houses.model.ResponseHouses;
 import smt.ort.houses.network.ApiResponse;
 import smt.ort.houses.network.ClientService;
@@ -37,13 +35,15 @@ public class HouseRepository {
     private final AppExecutors mAppExecutors;
     private HouseDao dao;
     private HousesService service;
+    private String authorization;
 
     public HouseRepository(AppExecutors appExecutors, Application app) {
         mAppExecutors = appExecutors;
         SharedPreferences sharedPreferences = app.getSharedPreferences("general", Context.MODE_PRIVATE);
         HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
         dao = db.houseDao();
-        service = ClientService.getClient(sharedPreferences.getString("authorization", "9876")).create(HousesService.class);
+        authorization = sharedPreferences.getString("authorization", null);
+        service = ClientService.getClient(authorization).create(HousesService.class);
     }
 
     public LiveData<Resource<List<House>>> getHouses(final HouseFilters filters) {
@@ -100,42 +100,43 @@ public class HouseRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<Favorite>>> getFavorites() {
-        return new NetworkBoundResource<List<Favorite>, ResponseFavorites>(mAppExecutors) {
+    public LiveData<Resource<List<House>>> getFavorites() {
+        return new NetworkBoundResource<List<House>, ResponseHouses>(mAppExecutors) {
 
             @Override
-            protected void saveCallResult(@NonNull ResponseFavorites item) {
+            protected void saveCallResult(@NonNull ResponseHouses item) {
                 if (item.getList() != null && item.getList().size() > 0) {
-                    dao.insertFavorites(item.getList());
+                    dao.insertHouses(item.getList());
                 }
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable List<Favorite> data) {
+            protected boolean shouldFetch(@Nullable List<House> data) {
                 return data == null || data.isEmpty();
             }
 
             @Override
-            protected LiveData<List<Favorite>> loadFromDb() {
+            protected LiveData<List<House>> loadFromDb() {
                 return dao.getFavorites();
             }
 
             @Override
-            protected LiveData<ApiResponse<ResponseFavorites>> createCall() {
+            protected LiveData<ApiResponse<ResponseHouses>> createCall() {
                 return service.getFavorites();
             }
         }.getAsLiveData();
     }
 
     @SuppressLint("StaticFieldLeak")
-    public void toggleFavorite(final House house) {
+    public void toggleFavorite(final House house, boolean setAsFavorite) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
+                house.setFavorite(setAsFavorite);
                 dao.update(house);
                 try {
-                    HousesService serviceDebug = ClientService.getClientCall("9876").create(HousesService.class);
-                    serviceDebug.addFavorite(new FavoriteBodyRequest(house.getId())).enqueue(new Callback<ApiResponse<FavoriteBodyResponse>>() {
+                    HousesService serviceClient = ClientService.getClientCall(authorization).create(HousesService.class);
+                    serviceClient.addFavorite(new FavoriteBodyRequest(house.getId())).enqueue(new Callback<ApiResponse<FavoriteBodyResponse>>() {
                         @Override
                         public void onResponse(Call<ApiResponse<FavoriteBodyResponse>> call, Response<ApiResponse<FavoriteBodyResponse>> response) {
                             Log.d("onResponse", response.message());
