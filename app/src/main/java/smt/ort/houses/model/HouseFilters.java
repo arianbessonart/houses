@@ -3,7 +3,13 @@ package smt.ort.houses.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
+import smt.ort.houses.util.Sha1Encoded;
 
 public class HouseFilters implements Parcelable {
 
@@ -174,6 +180,18 @@ public class HouseFilters implements Parcelable {
         } else {
             dest.writeByte((byte) (hasGarden ? 0x01 : 0x00));
         }
+    }
+
+    public String getEncodedKey() {
+        String jsonStr = new Gson().toJson(this);
+        try {
+            return Sha1Encoded.SHA1(jsonStr);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }

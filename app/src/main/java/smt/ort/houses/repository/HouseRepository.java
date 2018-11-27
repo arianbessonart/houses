@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,15 +30,20 @@ import smt.ort.houses.network.HousesService;
 import smt.ort.houses.network.Resource;
 import smt.ort.houses.network.utils.AppExecutors;
 import smt.ort.houses.network.utils.NetworkBoundResource;
+import smt.ort.houses.util.RateLimiter;
 
 public class HouseRepository {
+
+
+    private static HouseRepository instance;
 
     private final AppExecutors mAppExecutors;
     private HouseDao dao;
     private HousesService service;
     private String authorization;
+    private RateLimiter mRateLimiter = new RateLimiter(20, TimeUnit.SECONDS);
 
-    public HouseRepository(AppExecutors appExecutors, Application app) {
+    private HouseRepository(AppExecutors appExecutors, Application app) {
         mAppExecutors = appExecutors;
         SharedPreferences sharedPreferences = app.getSharedPreferences("general", Context.MODE_PRIVATE);
         HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
@@ -45,6 +51,22 @@ public class HouseRepository {
         authorization = sharedPreferences.getString("authorization", null);
         service = ClientService.getClient(authorization).create(HousesService.class);
     }
+
+    public static HouseRepository getInstance(AppExecutors appExecutors, Application app) {
+        if (instance == null) {
+            instance = new HouseRepository(appExecutors, app);
+        }
+        return instance;
+    }
+
+//    public HouseRepository(AppExecutors appExecutors, Application app) {
+//        mAppExecutors = appExecutors;
+//        SharedPreferences sharedPreferences = app.getSharedPreferences("general", Context.MODE_PRIVATE);
+//        HouseRoomDatabase db = HouseRoomDatabase.getDatabase(app);
+//        dao = db.houseDao();
+//        authorization = sharedPreferences.getString("authorization", null);
+//        service = ClientService.getClient(authorization).create(HousesService.class);
+//    }
 
     public LiveData<Resource<List<House>>> getHouses(final HouseFilters filters) {
         return new NetworkBoundResource<List<House>, ResponseHouses>(mAppExecutors) {
@@ -58,7 +80,7 @@ public class HouseRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<House> data) {
-                return data == null || data.isEmpty();
+                return data == null || data.isEmpty() || mRateLimiter.shouldFetch(filters.getEncodedKey());
             }
 
             @Override

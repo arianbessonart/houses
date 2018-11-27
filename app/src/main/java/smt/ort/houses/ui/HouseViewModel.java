@@ -27,7 +27,8 @@ public class HouseViewModel extends AndroidViewModel {
     public HouseViewModel(Application app) {
         super(app);
 
-        repository = new HouseRepository(new AppExecutors(), app);
+//        repository = new HouseRepository(new AppExecutors(), app);
+        repository = HouseRepository.getInstance(new AppExecutors(), app);
         houses = Transformations.switchMap(filters, houses -> repository.getHouses(filters.getValue()));
 
     }

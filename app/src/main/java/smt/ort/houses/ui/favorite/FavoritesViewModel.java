@@ -22,7 +22,8 @@ public class FavoritesViewModel extends AndroidViewModel {
 
     public FavoritesViewModel(@NonNull Application application) {
         super(application);
-        repository = new HouseRepository(new AppExecutors(), application);
+//        repository = new HouseRepository(new AppExecutors(), application);
+        repository = HouseRepository.getInstance(new AppExecutors(), application);
         favorites = repository.getFavorites();
     }
 
