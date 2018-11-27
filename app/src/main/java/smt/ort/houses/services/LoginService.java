@@ -71,7 +71,7 @@ public class LoginService {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 SharedPreferences sharedPreferences = application.getSharedPreferences("general", Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString("authorization", token).commit();
+                sharedPreferences.edit().putString("authorization", token).apply();
             }
 
             @Override
