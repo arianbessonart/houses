@@ -17,7 +17,6 @@ import smt.ort.houses.R;
  */
 public class HelpFragment extends Fragment {
 
-
     public HelpFragment() {
         // Required empty public constructor
     }
@@ -33,7 +32,7 @@ public class HelpFragment extends Fragment {
         mediacontroller.setAnchorView(videoView);
 
         videoView.setMediaController(mediacontroller);
-        videoView.setVideoURI(Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.raw.example_video));
+        videoView.setVideoURI(Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.raw.help_video));
         videoView.start();
 
         return v;
